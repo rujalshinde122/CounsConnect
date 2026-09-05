@@ -16,12 +16,40 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://counsconnect.centralindia.cloudapp.azure.com'),
   title: {
-    default: 'CounsConnect',
+    default: 'CounsConnect — Clinical Practice & Therapy Management',
     template: '%s | CounsConnect',
   },
   description: 'Professional counseling management platform — connect counselors with patients seamlessly.',
-  keywords: ['counseling', 'therapy', 'mental health', 'appointment scheduling'],
+  keywords: ['counseling', 'therapy', 'mental health', 'appointment scheduling', 'clinical practice'],
+  openGraph: {
+    title: 'CounsConnect — Clinical Practice & Therapy Management',
+    description: 'Professional counseling management platform — connect counselors with patients seamlessly.',
+    url: 'https://counsconnect.centralindia.cloudapp.azure.com',
+    siteName: 'CounsConnect',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'CounsConnect — Clinical Practice & Therapy Management',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CounsConnect — Clinical Practice & Therapy Management',
+    description: 'Professional counseling management platform — connect counselors with patients seamlessly.',
+    images: ['/og-image.png'],
+  },
+  icons: {
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/apple-icon.png',
+  },
 }
 
 export default function RootLayout({
