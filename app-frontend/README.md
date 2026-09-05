@@ -1,50 +1,123 @@
-# Welcome to your Expo app 👋
+# CounsConnect — Mobile Frontend
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The cross-platform mobile application for CounsConnect clients and patients. Built with React Native and Expo, featuring file-based routing and secure hardware-backed authentication through Supabase.
 
-## Get started
+---
 
-1. Install dependencies
+## 🛠️ Technology Stack
 
-   ```bash
-   npm install
-   ```
+| Layer | Technology | Version | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Framework** | [Expo SDK](https://docs.expo.dev/) | `52.0.49` | Universal app toolchain & runtime |
+| **Routing** | [Expo Router](https://docs.expo.dev/router/introduction/) | `4.0.22` | File-system-based native routing |
+| **Runtime** | [React Native](https://reactnative.dev/) | `0.76.9` | Cross-platform mobile runtime (iOS & Android) |
+| **UI Library** | [React](https://react.dev/) | `18.3.1` | Component lifecycle & state |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) | `^5.x` | Strict typing across components & APIs |
+| **Database & Auth** | [Supabase JS](https://supabase.com/docs/reference/javascript/introduction) | `^2.112.4` | Real-time PostgreSQL client & Auth |
+| **Secure Storage** | `expo-secure-store` | `^57.0.1` | Hardware keychain storage for auth tokens |
 
-2. Start the app
+---
 
-   ```bash
-    npx expo start
-   ```
+## 📁 Directory Structure & Routing
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+app-frontend/
+├── app/
+│   ├── (auth)/                     # Unauthenticated screens
+│   │   ├── login.tsx               # Client sign-in screen
+│   │   └── register.tsx            # Client registration screen
+│   ├── (main)/                     # Authenticated client screens
+│   │   ├── _layout.tsx             # Bottom tab navigation bar
+│   │   ├── home.tsx                # Client home dashboard
+│   │   ├── schedule.tsx            # Appointment booking & calendar
+│   │   ├── journal.tsx             # Client private mood & therapy journal
+│   │   ├── chatbot.tsx             # Supportive guidance / mental wellness assistant
+│   │   └── profile.tsx             # Client profile & settings
+│   ├── _layout.tsx                 # Root layout & navigation providers
+│   ├── index.tsx                   # Splash / Auth state redirector
+│   └── +not-found.tsx              # 404 fallback screen
+│
+├── components/                     # Reusable mobile UI components
+│   ├── Appointments.tsx            # Appointment list & card components
+│   ├── Task.tsx                    # Client homework/exercise task item
+│   ├── ThemedText.tsx              # Theme-aware typography component
+│   ├── ThemedView.tsx              # Theme-aware container component
+│   └── ui/                         # Icon and tab navigation elements
+│
+├── constants/
+│   └── Colors.ts                   # Color tokens for light and dark modes
+│
+├── hooks/                          # Custom hooks (color scheme, themes)
+│
+├── lib/
+│   └── supabase.ts                 # Supabase client with Expo SecureStore adapter
+│
+├── assets/                         # Icons, splash screens, and custom fonts
+├── .env.example                    # Mobile environment variable template
+├── app.json                        # Expo configuration manifest
+└── package.json                    # Dependencies and scripts
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## ⚡ Getting Started
 
-To learn more about developing your project with Expo, look at the following resources:
+### 1. Prerequisites
+- **Node.js**: v20+ recommended (v18.18+ minimum)
+- **npm**: v9+
+- **Expo Go** app on your physical device (iOS App Store or Google Play Store), or an iOS Simulator / Android Emulator.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 2. Installation & Setup
 
-## Join the community
+```bash
+# 1. Navigate to the mobile app directory
+cd app-frontend
 
-Join our community of developers creating universal apps.
+# 2. Copy the environment variables template
+cp .env.example .env
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+# 3. Install dependencies
+npm install
+
+# 4. Start the Expo development server
+npx expo start
+```
+
+Scan the QR code printed in your terminal with your phone camera (iOS) or the Expo Go app (Android).
+
+---
+
+## 🔐 Environment Variables
+
+Create `.env` inside `app-frontend/` based on `.env.example`:
+
+```env
+# =============================================================
+# CounsConnect Mobile App — Environment Configuration
+# =============================================================
+EXPO_PUBLIC_SUPABASE_URL=http://<AZURE_VM_IP_OR_DOMAIN>:8000
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+```
+
+> **Note**: Variables prefixed with `EXPO_PUBLIC_` are bundled into the JavaScript runtime. Never commit `.env` to version control.
+
+---
+
+## 🔒 Authentication & Keychain Security
+
+Authentication sessions are securely persisted in the device's hardware keychain using `expo-secure-store` inside [`lib/supabase.ts`](./lib/supabase.ts):
+
+- **Automatic Token Refresh**: Supabase silently refreshes expired access tokens before API calls.
+- **Session Persistence**: Users remain logged in across application restarts without storing raw tokens in unencrypted `AsyncStorage`.
+
+---
+
+## 📜 Available Scripts
+
+| Command | Action |
+| :--- | :--- |
+| `npm run start` or `npx expo start` | Launches Metro bundler and displays QR code |
+| `npm run ios` | Opens app directly in the macOS iOS Simulator |
+| `npm run android` | Opens app directly in the Android Emulator |
+| `npm run web` | Runs the Expo application in a browser window |
+| `npm run lint` | Runs ESLint checks |
