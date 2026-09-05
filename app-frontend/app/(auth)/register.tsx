@@ -75,13 +75,10 @@ export default function RegisterScreen() {
       setError(signUpError.message);
     } else {
       Alert.alert(
-        "Check your email!",
-        `We've sent a confirmation link to ${email}. Tap it to activate your account, then sign in.`,
+        "Registration Successful",
+        "Your account has been created. Please sign in.",
         [{ text: "Go to Login", onPress: () => router.replace("/(auth)/login") }]
       );
-    }
-
-      setIsLoading(false);
     }
   };
 

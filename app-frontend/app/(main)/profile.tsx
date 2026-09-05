@@ -3,6 +3,7 @@ import { ScrollView, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator
 import { useRouter } from 'expo-router';
 import { format, parse } from 'date-fns';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from '../../lib/supabase';
 
 interface UserData {
@@ -165,7 +166,7 @@ const ProfilePage = () => {
         setLoadingJournals(true);
         try {
             const keys = await AsyncStorage.getAllKeys();
-            const journalKeys = keys.filter(key => key.startsWith('journal_') && !key.includes('analysis'));
+            const journalKeys = keys.filter((key: string) => key.startsWith('journal_') && !key.includes('analysis'));
             const entriesData = await AsyncStorage.multiGet(journalKeys);
             
             // Create an array to hold all entries with analysis
