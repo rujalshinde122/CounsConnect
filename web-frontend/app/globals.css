@@ -1,0 +1,194 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   CounsConnect Design System Tokens
+   Extracted from Larana University Template & Healthcare References
+   Primary: Organic Sage Teal (#588B8B)
+   Canvas: Warm Alabaster Cream (#F6F5EE)
+   Cards: Elevated Crisp White (#FFFFFF)
+   Text: Deep Organic Charcoal (#2D3A3A)
+   ============================================================ */
+
+:root {
+  /* Canvas & Base Surfaces */
+  --background: #F6F5EE;
+  --foreground: #2D3A3A;
+
+  /* Card Surfaces */
+  --card: #FFFFFF;
+  --card-foreground: #2D3A3A;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #2D3A3A;
+
+  /* Organic Sage Teal Brand Series */
+  --primary: #588B8B;
+  --primary-dark: #3D6363;
+  --primary-deep: #263F3F;
+  --primary-foreground: #FFFFFF;
+
+  /* Warm Neutrals & Muted Tones */
+  --secondary: #EFEFE8;
+  --secondary-foreground: #2D3A3A;
+
+  --muted: #EFEFE8;
+  --muted-foreground: #5A6B6B;
+
+  --accent: #DDEAE7;
+  --accent-foreground: #263F3F;
+
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #E2E0D6;
+  --input: #EFEFE8;
+  --ring: #588B8B;
+
+  --radius: 1rem; /* 16px soft modern curvature */
+
+  /* Sidebar Tokens */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #2D3A3A;
+  --sidebar-primary: #588B8B;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EDF4F2;
+  --sidebar-accent-foreground: #263F3F;
+  --sidebar-border: #E2E0D6;
+  --sidebar-ring: #588B8B;
+}
+
+.dark {
+  --background: #1C2424;
+  --foreground: #F6F5EE;
+
+  --card: #222C2C;
+  --card-foreground: #F6F5EE;
+
+  --popover: #222C2C;
+  --popover-foreground: #F6F5EE;
+
+  --primary: #588B8B;
+  --primary-dark: #4A7A7A;
+  --primary-deep: #1F3636;
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #2C3838;
+  --secondary-foreground: #F6F5EE;
+
+  --muted: #2C3838;
+  --muted-foreground: #8B9898;
+
+  --accent: #344444;
+  --accent-foreground: #DDEAE7;
+
+  --destructive: #F87171;
+  --destructive-foreground: #1C2424;
+
+  --border: rgba(226, 224, 214, 0.12);
+  --input: rgba(226, 224, 214, 0.15);
+  --ring: #588B8B;
+
+  --sidebar: #222C2C;
+  --sidebar-foreground: #F6F5EE;
+  --sidebar-primary: #588B8B;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #2C3838;
+  --sidebar-accent-foreground: #F6F5EE;
+  --sidebar-border: rgba(226, 224, 214, 0.12);
+  --sidebar-ring: #588B8B;
+}
+
+@theme inline {
+  --font-sans: var(--font-sans), var(--font-inter), system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-deep: var(--primary-deep);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 2.5);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-[#F6F5EE] text-[#2D3A3A] min-h-screen antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Custom Gradients & Aesthetic Helpers */
+.gradient-mesh-coral {
+  background: linear-gradient(135deg, #FF8A65 0%, #FFAB91 50%, #FFCCBC 100%);
+}
+
+.gradient-mesh-cyan {
+  background: linear-gradient(135deg, #38BDF8 0%, #7DD3FC 50%, #BAE6FD 100%);
+}
+
+.gradient-sage-dark {
+  background: linear-gradient(145deg, #3D6363 0%, #263F3F 100%);
+}
+
+.gradient-sage-subtle {
+  background: linear-gradient(180deg, #F6F5EE 0%, #EDF4F2 100%);
+}
+
+.card-soft-shadow {
+  box-shadow: 0 4px 20px -2px rgba(45, 58, 58, 0.04), 0 2px 6px -1px rgba(45, 58, 58, 0.02);
+}
+
+.card-glow-sage {
+  box-shadow: 0 8px 30px -4px rgba(88, 139, 139, 0.15);
+}
+
+/* Custom Subtle Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D5D3C8;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B8B6AB;
+}

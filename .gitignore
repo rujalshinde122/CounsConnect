@@ -1,0 +1,87 @@
+# ==============================================================================
+# CounsConnect Monorepo - Git Ignore Configuration
+# ==============================================================================
+
+# Dependencies
+node_modules/
+**/node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+
+# Next.js Build Outputs (web-frontend)
+.next/
+**/.next/
+out/
+**/out/
+
+# Expo / React Native Build Outputs (app-frontend)
+.expo/
+**/.expo/
+dist/
+**/dist/
+build/
+**/build/
+web-build/
+**/web-build/
+expo-env.d.ts
+
+# Mobile Native Artifacts & Keystores
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+.metro-health-check*
+
+# Environment & Secrets (NEVER COMMIT SENSITIVE KEYS)
+.env
+.env*
+*.env
+*.env.*
+**/.env
+**/.env.*
+!**/.env.example
+
+# Certificates & Private Keys
+*.pem
+*.pub
+secrets.json
+*-adminsdk-*.json
+config.local.js
+
+# Local Documentation, Architecture Notes & Design Assets
+docs/
+*.pdf
+UIDesign/
+
+# Testing & Coverage
+coverage/
+**/coverage/
+
+# Vercel
+.vercel/
+**/.vercel/
+
+# TypeScript
+*.tsbuildinfo
+
+# Operating System & IDE
+.DS_Store
+**/.DS_Store
+Thumbs.db
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
