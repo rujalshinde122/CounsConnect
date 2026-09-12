@@ -1,0 +1,226 @@
+{
+  "common": {
+    "appName": "CounsConnect",
+    "practiceWorkspace": "Practice Workspace",
+    "newClient": "New Client",
+    "signOut": "Sign out",
+    "settings": "Settings",
+    "loading": "Loading...",
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "search": "Search...",
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "chooseLanguage": "Choose preferred language",
+    "viewAll": "View all",
+    "viewCalendar": "View calendar",
+    "onlineVideo": "Online Video",
+    "inPerson": "In-Person",
+    "today": "Today",
+    "yrs": "yrs",
+    "due": "Due",
+    "patient": "Patient",
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "onHold": "On Hold",
+      "completed": "Completed",
+      "pending": "Pending",
+      "upcoming": "Upcoming",
+      "scheduled": "Scheduled",
+      "cancelled": "Cancelled",
+      "confirmed": "Confirmed"
+    },
+    "frequency": {
+      "once": "One-time",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "biweekly": "Bi-weekly",
+      "monthly": "Monthly"
+    }
+  },
+  "nav": {
+    "overview": "Overview",
+    "clients": "Clients",
+    "appointments": "Appointments",
+    "tasks": "Tasks",
+    "settings": "Settings",
+    "subtitles": {
+      "overview": "Practice summary and today’s sessions",
+      "clients": "Client roster and clinical intake profiles",
+      "newClient": "Intake registration form",
+      "appointments": "Scheduled counseling sessions",
+      "tasks": "Patient exercises and homework assignments",
+      "settings": "Account preferences and security"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to access your counselor workspace",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "counselor@practice.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "submitButton": "Sign In",
+      "signingIn": "Signing in...",
+      "forgotPassword": "Forgot password?",
+      "registerPrompt": "Don't have an account?",
+      "registerLink": "Register practice",
+      "brandQuote": "Empowering therapists and counselors with structured clinical workflows and private patient collaboration.",
+      "featureSecure": "HIPAA & clinical privacy compliant",
+      "featureSessions": "Seamless session scheduling & intake",
+      "featureTasks": "Therapeutic homework & task tracking"
+    },
+    "register": {
+      "title": "Create Practice Account",
+      "subtitle": "Get started with CounsConnect clinical management",
+      "fullNameLabel": "Full Name",
+      "fullNamePlaceholder": "Dr. Sarah Jenkins",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "sarah@practice.com",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm Password",
+      "submitButton": "Register Practice",
+      "registering": "Registering...",
+      "loginPrompt": "Already have an account?",
+      "loginLink": "Sign in"
+    },
+    "forgotPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your email to receive a password reset link",
+      "emailLabel": "Email address",
+      "submitButton": "Send Reset Link",
+      "sending": "Sending link...",
+      "backToLogin": "Back to sign in",
+      "successMessage": "Check your email for the password reset link."
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "counselor": "Counselor",
+      "subtitle": "Manage your counseling sessions, patient records, and practice schedule."
+    },
+    "overview": {
+      "title": "Overview",
+      "subtitle": "Practice summary and today’s sessions",
+      "stats": {
+        "todaySessions": "Today's Sessions",
+        "todaySessionsSubtext": "Scheduled today",
+        "totalClients": "Total Clients",
+        "totalClientsSubtext": "Active caseload",
+        "newThisWeek": "New This Week",
+        "newThisWeekSubtext": "Past 7 days",
+        "pendingTasks": "Pending Tasks",
+        "pendingTasksSubtext": "Client assignments"
+      },
+      "todaySchedule": {
+        "title": "Today's Schedule",
+        "sessionsToday": "{count} session today",
+        "sessionsTodayPlural": "{count} sessions today",
+        "empty": "No sessions scheduled for today"
+      },
+      "availability": {
+        "title": "Practice Availability",
+        "subtitle": "Regular consultation time slots",
+        "offlineSlots": "Offline In-Person (Mon–Fri)",
+        "onlineSlots": "Online Video (Mon–Fri)"
+      },
+      "recentClients": {
+        "title": "Recent Clients",
+        "subtitle": "Caseload snapshot",
+        "empty": "No clients registered yet"
+      },
+      "pendingTasks": {
+        "title": "Pending Tasks",
+        "subtitle": "Assigned client exercises",
+        "empty": "No pending tasks"
+      }
+    },
+    "clients": {
+      "title": "Clients",
+      "subtitle": "Manage clinical client profiles and intake notes",
+      "searchPlaceholder": "Search clients by name or email...",
+      "newClientButton": "Add New Client",
+      "totalClients": "{count} total clients",
+      "emptyTitle": "No clients registered yet",
+      "emptySubtitle": "Add your first client to start managing notes, sessions, and task assignments.",
+      "addFirstClient": "Add First Client",
+      "table": {
+        "name": "Client Name",
+        "age": "Age",
+        "gender": "Gender",
+        "status": "Status",
+        "lastSession": "Last Session",
+        "actions": "Actions"
+      }
+    },
+    "appointments": {
+      "title": "Appointments",
+      "subtitle": "Manage and track your therapy sessions",
+      "scheduleButton": "Schedule Session",
+      "emptyTitle": "No appointments yet",
+      "emptySubtitle": "Appointments booked by patients will appear here.",
+      "scheduleModal": {
+        "title": "Schedule Appointment",
+        "subtitle": "Book a new counseling session for a patient",
+        "selectPatient": "Select Patient / Client",
+        "selectPatientPlaceholder": "Choose a patient...",
+        "noPatients": "No patients found in practice directory",
+        "date": "Session Date",
+        "time": "Start Time",
+        "duration": "Duration",
+        "format": "Session Format",
+        "video": "Online Video",
+        "inPerson": "In-Person",
+        "status": "Initial Status",
+        "confirmed": "Confirmed",
+        "pending": "Pending Confirmation",
+        "notes": "Session Notes / Agenda",
+        "notesPlaceholder": "e.g., Initial intake assessment, CBT thought review...",
+        "submit": "Schedule Session",
+        "submitting": "Scheduling...",
+        "success": "Appointment scheduled successfully!"
+      }
+    },
+    "tasks": {
+      "title": "Tasks",
+      "subtitle": "Assigned behavioral exercises and check-in tasks",
+      "assignTaskButton": "Assign Task",
+      "emptyTitle": "No active tasks",
+      "emptySubtitle": "Exercises and assignments assigned to patients will appear here.",
+      "createModal": {
+        "title": "Assign Therapeutic Task",
+        "subtitle": "Create an exercise or behavioral assignment for a patient",
+        "selectPatient": "Select Patient / Client",
+        "selectPatientPlaceholder": "Choose a patient...",
+        "noPatients": "No patients found in practice directory",
+        "taskTitle": "Task Title",
+        "titlePlaceholder": "e.g., Daily Thought Log, Deep Breathing 10 mins",
+        "instructions": "Instructions / Description",
+        "instructionsPlaceholder": "Detailed guidance for the client to complete this exercise...",
+        "frequency": "Frequency",
+        "deadline": "Due Date / Deadline",
+        "submit": "Assign Task",
+        "submitting": "Assigning...",
+        "success": "Task assigned successfully!"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Account preferences and clinical security",
+      "profileSection": "Counselor Profile",
+      "profileSubtitle": "Your clinical name and professional contact details",
+      "securitySection": "Security & Password",
+      "securitySubtitle": "Update your account password and security credentials",
+      "languageSection": "Language & Locale",
+      "languageSubtitle": "Select your preferred language across the entire application",
+      "languageHelp": "This preference applies to all dashboard navigation, patient records, sessions, and settings.",
+      "profileSaved": "Profile changes saved successfully!",
+      "passwordSaved": "Password updated successfully!"
+    }
+  }
+}

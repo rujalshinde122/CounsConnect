@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Check } from 'lucide-react'
+import { Check, Globe } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface SettingsFormProps {
   userId: string
@@ -18,6 +19,7 @@ export default function SettingsForm({
   userId, initialName, initialPhone, initialPlaceOfStay, email, role,
 }: SettingsFormProps) {
   const router = useRouter()
+  const { t, locale, setLocale, languages } = useLanguage()
 
   // Profile section
   const [name, setName] = useState(initialName)
@@ -108,7 +110,10 @@ export default function SettingsForm({
     <div className="space-y-6">
       {/* Profile info Card */}
       <div className="bg-white rounded-xl border border-[#E2E0D6] shadow-2xs p-6 space-y-4">
-        <h3 className="font-bold text-[#2D3A3A] text-sm">Personal Information</h3>
+        <div>
+          <h3 className="font-bold text-[#2D3A3A] text-sm">{t('dashboard.settings.profileSection')}</h3>
+          <p className="text-xs text-[#5A6B6B] mt-0.5">{t('dashboard.settings.profileSubtitle')}</p>
+        </div>
 
         {profileError && (
           <div className="bg-rose-50 border border-rose-200 text-rose-800 px-3 py-2 rounded-lg text-xs font-medium">
@@ -165,11 +170,11 @@ export default function SettingsForm({
               disabled={profileSaving}
               className="bg-[#588B8B] hover:bg-[#3D6363] disabled:opacity-60 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
             >
-              {profileSaving ? 'Saving...' : 'Save Profile'}
+              {profileSaving ? t('common.loading') : t('common.save')}
             </button>
             {profileSaved && (
               <span className="text-emerald-700 text-xs font-medium flex items-center gap-1">
-                <Check className="w-3.5 h-3.5" /> Saved
+                <Check className="w-3.5 h-3.5" /> {t('dashboard.settings.profileSaved')}
               </span>
             )}
           </div>
@@ -232,15 +237,65 @@ export default function SettingsForm({
               disabled={passwordSaving}
               className="bg-[#2D3A3A] hover:bg-[#1A2525] disabled:opacity-60 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
             >
-              {passwordSaving ? 'Updating...' : 'Update Password'}
+              {passwordSaving ? t('common.loading') : 'Update Password'}
             </button>
             {passwordSaved && (
               <span className="text-emerald-700 text-xs font-medium flex items-center gap-1">
-                <Check className="w-3.5 h-3.5" /> Password updated!
+                <Check className="w-3.5 h-3.5" /> {t('dashboard.settings.passwordSaved')}
               </span>
             )}
           </div>
         </form>
+      </div>
+
+      {/* Language & Locale Section */}
+      <div className="bg-white rounded-xl border border-[#E2E0D6] shadow-2xs p-6 space-y-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Globe className="w-4 h-4 text-[#588B8B]" />
+            <h2 className="text-sm font-bold text-[#2D3A3A]">{t('dashboard.settings.languageSection')}</h2>
+          </div>
+          <p className="text-xs text-[#5A6B6B] mt-0.5">
+            {t('dashboard.settings.languageSubtitle')}
+          </p>
+        </div>
+
+        <p className="text-xs text-[#889898]">
+          {t('dashboard.settings.languageHelp')}
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          {languages.map((lang) => {
+            const isSelected = lang.code === locale
+            return (
+              <button
+                key={lang.code}
+                type="button"
+                onClick={() => setLocale(lang.code)}
+                className={`p-4 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-3 ${
+                  isSelected
+                    ? 'border-[#588B8B] bg-[#588B8B]/5 shadow-xs ring-1 ring-[#588B8B]'
+                    : 'border-[#E2E0D6] bg-white hover:bg-[#F6F5EE]/50 hover:border-[#588B8B]/30'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-base font-bold text-[#2D3A3A]">{lang.native}</span>
+                  {isSelected && (
+                    <div className="w-5 h-5 rounded-full bg-[#588B8B] text-white flex items-center justify-center">
+                      <Check className="w-3 h-3 stroke-[3]" />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <span className="text-xs font-medium text-[#5A6B6B]">{lang.label}</span>
+                  <p className="text-[10px] text-[#889898] mt-0.5">
+                    {lang.code === 'en' ? 'Default international' : lang.code === 'hi' ? 'मानक देवनागरी लिपि' : 'स्थानिक मराठी देवनागरी'}
+                  </p>
+                </div>
+              </button>
+            )
+          })}
+        </div>
       </div>
     </div>
   )

@@ -7,10 +7,13 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Sparkles, ArrowUpRight, ShieldCheck } from 'lucide-react'
+import { Sparkles, ArrowUpRight } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -33,7 +36,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-[#F6F5EE]">
+    <div className="min-h-screen grid lg:grid-cols-2 bg-[#F6F5EE] relative">
+      {/* Language Switcher Fixed at Top Right */}
+      <div className="absolute top-6 right-6 z-20">
+        <LanguageSwitcher variant="auth" />
+      </div>
+
       {/* Left — Branding Panel (Larana Sage Minimal Aesthetic) */}
       <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#3D6363] via-[#2D4E4E] to-[#263F3F] p-12 lg:p-16 text-white relative overflow-hidden">
         {/* Subtle Decorative Geometric Accents from Larana Template */}
@@ -49,10 +57,10 @@ export default function LoginPage() {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-base tracking-tight text-white">CounsConnect</span>
+              <span className="font-bold text-base tracking-tight text-white">{t('common.appName')}</span>
               <span className="text-[#A3E635] text-xs">✳</span>
             </div>
-            <p className="text-[11px] text-[#DDEAE7] font-medium tracking-wide">Clinical Practice & Therapy</p>
+            <p className="text-[11px] text-[#DDEAE7] font-medium tracking-wide">{t('common.practiceWorkspace')}</p>
           </div>
         </div>
 
@@ -60,15 +68,15 @@ export default function LoginPage() {
         <div className="space-y-6 max-w-lg relative z-10">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-xs border border-white/20 px-3 py-1 rounded-full text-xs text-[#D9F99D]">
             <Sparkles className="w-3.5 h-3.5 text-[#A3E635]" />
-            <span>Modern Clinical Workspace</span>
+            <span>{t('auth.login.featureSecure')}</span>
           </div>
 
           <h2 className="text-3xl xl:text-4xl font-extrabold leading-tight tracking-tight text-white">
-            Care for people, seamlessly managed in one place.
+            {t('auth.login.brandQuote')}
           </h2>
 
           <p className="text-sm text-[#DDEAE7] leading-relaxed">
-            A minimal, distraction-free clinical platform built for therapists, psychologists, and counselors.
+            {t('auth.login.featureSessions')} • {t('auth.login.featureTasks')}
           </p>
 
           <div className="pt-4 flex items-center gap-3">
@@ -76,8 +84,8 @@ export default function LoginPage() {
               CC
             </div>
             <div>
-              <p className="text-xs font-bold text-white">St. Mary&apos;s Clinical Network</p>
-              <p className="text-[11px] text-[#DDEAE7]">HIPAA & Data Privacy Compliant</p>
+              <p className="text-xs font-bold text-white">CounsConnect Clinical Network</p>
+              <p className="text-[11px] text-[#DDEAE7]">{t('auth.login.featureSecure')}</p>
             </div>
           </div>
         </div>
@@ -99,10 +107,10 @@ export default function LoginPage() {
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#588B8B]" />
-              <span className="text-xs font-bold uppercase tracking-wider text-[#588B8B]">Sign In</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#588B8B]">{t('auth.login.submitButton')}</span>
             </div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#2D3A3A]">Welcome back</h1>
-            <p className="text-xs text-[#5A6B6B]">Enter your clinical account credentials to continue</p>
+            <h1 className="text-2xl font-extrabold tracking-tight text-[#2D3A3A]">{t('auth.login.title')}</h1>
+            <p className="text-xs text-[#5A6B6B]">{t('auth.login.subtitle')}</p>
           </div>
 
           {error && (
@@ -114,7 +122,7 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="email" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
-                Email Address
+                {t('auth.login.emailLabel')}
               </Label>
               <Input
                 id="email"
@@ -123,7 +131,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="counselor@stmarys.org"
+                placeholder="counselor@practice.com"
                 className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5"
               />
             </div>
@@ -131,13 +139,13 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
-                  Password
+                  {t('auth.login.passwordLabel')}
                 </Label>
                 <Link
                   href="/forgot-password"
                   className="text-xs font-semibold text-[#588B8B] hover:text-[#3D6363] hover:underline underline-offset-4"
                 >
-                  Forgot password?
+                  {t('auth.login.forgotPassword')}
                 </Link>
               </div>
               <Input
@@ -158,14 +166,14 @@ export default function LoginPage() {
               className="w-full bg-[#588B8B] hover:bg-[#3D6363] text-white font-bold text-xs py-2.5 rounded-full shadow-xs transition-colors mt-2"
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign In to Workspace'}
+              {loading ? t('auth.login.signingIn') : t('auth.login.submitButton')}
             </Button>
           </form>
 
           <div className="pt-2 text-center text-xs text-[#5A6B6B]">
-            Don&apos;t have an account?{' '}
+            {t('auth.login.registerPrompt')}{' '}
             <Link href="/register" className="text-[#588B8B] font-bold hover:underline underline-offset-4">
-              Register here
+              {t('auth.login.registerLink')}
             </Link>
           </div>
         </div>

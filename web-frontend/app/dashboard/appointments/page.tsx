@@ -1,112 +1,31 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
-import { Video, MapPin } from 'lucide-react'
-import AppointmentActions from './AppointmentActions'
+import AppointmentsView from '@/components/dashboard/AppointmentsView'
 
 export const metadata: Metadata = { title: 'Appointments | CounsConnect' }
-
-const STATUS_CLASSES: Record<string, string> = {
-  confirmed: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-  pending: 'bg-amber-50 text-amber-800 border-amber-200',
-  completed: 'bg-[#EDF4F2] text-[#263F3F] border-[#588B8B]/30',
-  cancelled: 'bg-rose-50 text-rose-800 border-rose-200',
-}
 
 export default async function AppointmentsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: appointments } = await supabase
-    .from('appointments')
-    .select('*')
-    .eq('counselor_id', user.id)
-    .order('start_time', { ascending: false })
+  const [
+    { data: appointments },
+    { data: patients },
+  ] = await Promise.all([
+    supabase
+      .from('appointments')
+      .select(`
+        *,
+        patient:profiles!appointments_patient_id_fkey(name, email)
+      `)
+      .eq('counselor_id', user.id)
+      .order('start_time', { ascending: false }),
+    supabase
+      .from('profiles')
+      .select('id, name, email, role'),
+  ])
 
-  // Group by date
-  const grouped: Record<string, typeof appointments> = {}
-  for (const appt of appointments ?? []) {
-    const date = new Date(appt.start_time).toLocaleDateString('en-US', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-    })
-    if (!grouped[date]) grouped[date] = []
-    grouped[date]!.push(appt)
-  }
-
-  return (
-    <div className="max-w-[1400px] mx-auto space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-xl font-bold text-[#2D3A3A] tracking-tight">Appointments</h2>
-        <p className="text-xs text-[#5A6B6B] mt-0.5">Manage and track your therapy sessions</p>
-      </div>
-
-      {Object.keys(grouped).length === 0 ? (
-        <div className="bg-white rounded-xl border border-[#E2E0D6] p-12 text-center space-y-2">
-          <p className="text-sm font-semibold text-[#2D3A3A]">No appointments yet</p>
-          <p className="text-xs text-[#5A6B6B]">
-            Appointments booked by patients will appear here.
-          </p>
-        </div>
-      ) : (
-        Object.entries(grouped).map(([date, appts]) => (
-          <div key={date} className="space-y-2.5">
-            <p className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">{date}</p>
-
-            <div className="bg-white rounded-xl border border-[#E2E0D6] shadow-2xs overflow-hidden">
-              <div className="divide-y divide-[#E2E0D6]/60">
-                {appts!.map((appt) => {
-                  const statusCls = STATUS_CLASSES[appt.status] || STATUS_CLASSES.pending
-
-                  return (
-                    <div
-                      key={appt.id}
-                      className="px-6 py-3.5 flex items-center justify-between gap-4 hover:bg-[#F6F5EE]/40 transition-colors"
-                    >
-                      <div className="flex items-center gap-4 min-w-0">
-                        <span className="font-mono text-xs font-semibold text-[#5A6B6B] w-16 shrink-0">
-                          {new Date(appt.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-
-                        <div className="min-w-0">
-                          <p className="font-semibold text-[#2D3A3A] text-xs leading-tight">Patient Session</p>
-                          <div className="flex items-center gap-2 mt-0.5 text-xs text-[#5A6B6B]">
-                            {appt.location === 'video' ? (
-                              <span className="flex items-center gap-1">
-                                <Video className="w-3 h-3 text-[#588B8B]" /> Online Video
-                              </span>
-                            ) : (
-                              <span className="flex items-center gap-1">
-                                <MapPin className="w-3 h-3 text-[#FF8A65]" /> In-Person
-                              </span>
-                            )}
-                            {appt.notes && (
-                              <span className="text-[#889898] truncate max-w-[240px]">
-                                • {appt.notes}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span className={`text-xs px-2 py-0.5 rounded border capitalize font-medium ${statusCls}`}>
-                          {appt.status}
-                        </span>
-
-                        {['pending', 'confirmed'].includes(appt.status) && (
-                          <AppointmentActions appointmentId={appt.id} />
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-        ))
-      )}
-    </div>
-  )
+  return <AppointmentsView appointments={appointments as any} patients={patients as any} />
 }

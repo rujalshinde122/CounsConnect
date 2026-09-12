@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
 import { Sparkles, ArrowUpRight, CheckCircle2 } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -41,7 +42,10 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8 bg-[#F6F5EE]">
+      <div className="min-h-screen flex items-center justify-center p-8 bg-[#F6F5EE] relative">
+        <div className="absolute top-6 right-6 z-20">
+          <LanguageSwitcher variant="auth" />
+        </div>
         <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-[#E2E0D6] shadow-xs text-center space-y-4">
           <div className="w-14 h-14 rounded-2xl bg-[#ECFCCB] border border-[#84CC16]/30 flex items-center justify-center mx-auto text-[#4D7C0F]">
             <CheckCircle2 className="w-7 h-7" />
@@ -55,7 +59,7 @@ export default function RegisterPage() {
               href="/login"
               className="inline-flex items-center justify-center w-full px-4 py-2.5 rounded-full bg-[#588B8B] hover:bg-[#3D6363] text-white text-xs font-bold transition-colors"
             >
-              Back to Sign In
+              {t('auth.forgotPassword.backToLogin')}
             </Link>
           </div>
         </div>
@@ -64,7 +68,12 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-[#F6F5EE]">
+    <div className="min-h-screen grid lg:grid-cols-2 bg-[#F6F5EE] relative">
+      {/* Language Switcher Fixed at Top Right */}
+      <div className="absolute top-6 right-6 z-20">
+        <LanguageSwitcher variant="auth" />
+      </div>
+
       {/* Left */}
       <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#3D6363] via-[#2D4E4E] to-[#263F3F] p-12 lg:p-16 text-white relative overflow-hidden">
         <div className="absolute bottom-12 right-12 text-white/20 text-7xl font-mono select-none">
@@ -76,23 +85,23 @@ export default function RegisterPage() {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-base tracking-tight text-white">CounsConnect</span>
+              <span className="font-bold text-base tracking-tight text-white">{t('common.appName')}</span>
               <span className="text-[#A3E635] text-xs">✳</span>
             </div>
-            <p className="text-[11px] text-[#DDEAE7] font-medium tracking-wide">Clinical Practice & Therapy</p>
+            <p className="text-[11px] text-[#DDEAE7] font-medium tracking-wide">{t('common.practiceWorkspace')}</p>
           </div>
         </div>
 
         <div className="space-y-4 max-w-lg relative z-10">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-xs border border-white/20 px-3 py-1 rounded-full text-xs text-[#D9F99D]">
             <Sparkles className="w-3.5 h-3.5 text-[#A3E635]" />
-            <span>Join the Network</span>
+            <span>{t('auth.login.featureSecure')}</span>
           </div>
           <h2 className="text-3xl xl:text-4xl font-extrabold leading-tight tracking-tight text-white">
-            Start your counseling practice workspace.
+            {t('auth.register.title')}
           </h2>
           <p className="text-sm text-[#DDEAE7] leading-relaxed">
-            Manage patient intakes, automated task reminders, clinical notes, and session schedules with ease.
+            {t('auth.register.subtitle')}
           </p>
         </div>
 
@@ -110,10 +119,10 @@ export default function RegisterPage() {
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#588B8B]" />
-              <span className="text-xs font-bold uppercase tracking-wider text-[#588B8B]">Registration</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#588B8B]">{t('auth.register.submitButton')}</span>
             </div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#2D3A3A]">Create account</h1>
-            <p className="text-xs text-[#5A6B6B]">Fill in your clinical credentials to get started</p>
+            <h1 className="text-2xl font-extrabold tracking-tight text-[#2D3A3A]">{t('auth.register.title')}</h1>
+            <p className="text-xs text-[#5A6B6B]">{t('auth.register.subtitle')}</p>
           </div>
 
           {error && (
@@ -124,29 +133,39 @@ export default function RegisterPage() {
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">Full name</Label>
+              <Label htmlFor="name" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
+                {t('auth.register.fullNameLabel')}
+              </Label>
               <Input id="name" type="text" autoComplete="name" required value={name} onChange={e => setName(e.target.value)} placeholder="Dr. Full Name" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="reg-email" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">Email</Label>
-              <Input id="reg-email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="counselor@stmarys.org" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
+              <Label htmlFor="reg-email" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
+                {t('auth.register.emailLabel')}
+              </Label>
+              <Input id="reg-email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="counselor@practice.com" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="reg-password" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">Password</Label>
+              <Label htmlFor="reg-password" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
+                {t('auth.register.passwordLabel')}
+              </Label>
               <Input id="reg-password" type="password" autoComplete="new-password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="Min. 6 characters" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="confirm-password" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">Confirm password</Label>
-              <Input id="confirm-password" type="password" autoComplete="new-password" required value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Repeat your password" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
+              <Label htmlFor="confirm-password" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
+                {t('auth.register.confirmPasswordLabel')}
+              </Label>
+              <Input id="confirm-password" type="password" autoComplete="new-password" required value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Repeat password" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
             </div>
             <Button id="register-btn" type="submit" className="w-full bg-[#588B8B] hover:bg-[#3D6363] text-white font-bold text-xs py-2.5 rounded-full shadow-xs transition-colors mt-2" disabled={loading}>
-              {loading ? 'Creating account...' : 'Create Counselor Account'}
+              {loading ? t('auth.register.registering') : t('auth.register.submitButton')}
             </Button>
           </form>
 
           <p className="text-center text-xs text-[#5A6B6B]">
-            Already have an account?{' '}
-            <Link href="/login" className="text-[#588B8B] font-bold hover:underline underline-offset-4">Sign in</Link>
+            {t('auth.register.loginPrompt')}{' '}
+            <Link href="/login" className="text-[#588B8B] font-bold hover:underline underline-offset-4">
+              {t('auth.register.loginLink')}
+            </Link>
           </p>
         </div>
       </div>
