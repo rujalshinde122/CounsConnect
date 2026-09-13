@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
-import { Video, MapPin } from 'lucide-react'
+import Link from 'next/link'
+import { Video, MapPin, CalendarPlus } from 'lucide-react'
 import AppointmentActions from './AppointmentActions'
 
 export const metadata: Metadata = { title: 'Appointments | CounsConnect' }
@@ -37,17 +38,35 @@ export default async function AppointmentsPage() {
   return (
     <div className="max-w-[1400px] mx-auto space-y-6">
       {/* Header */}
-      <div>
-        <h2 className="text-xl font-bold text-[#2D3A3A] tracking-tight">Appointments</h2>
-        <p className="text-xs text-[#5A6B6B] mt-0.5">Manage and track your therapy sessions</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-[#2D3A3A] tracking-tight">Schedule</h2>
+          <p className="text-xs text-[#5A6B6B] mt-0.5">Your upcoming and past sessions</p>
+        </div>
+        <Link
+          href="/dashboard/appointments/new"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#588B8B] hover:bg-[#3D6363] text-white text-xs font-semibold shadow-xs transition-colors"
+        >
+          <CalendarPlus className="w-3.5 h-3.5" />
+          <span>New Appointment</span>
+        </Link>
       </div>
 
       {Object.keys(grouped).length === 0 ? (
-        <div className="bg-white rounded-xl border border-[#E2E0D6] p-12 text-center space-y-2">
+        <div className="bg-white rounded-xl border border-[#E2E0D6] p-12 text-center space-y-3">
           <p className="text-sm font-semibold text-[#2D3A3A]">No appointments yet</p>
-          <p className="text-xs text-[#5A6B6B]">
-            Appointments booked by patients will appear here.
+          <p className="text-xs text-[#5A6B6B] max-w-sm mx-auto">
+            Appointments booked by patients or scheduled by you will appear here.
           </p>
+          <div className="pt-2">
+            <Link
+              href="/dashboard/appointments/new"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#588B8B] hover:bg-[#3D6363] text-white text-xs font-semibold transition-colors"
+            >
+              <CalendarPlus className="w-3.5 h-3.5" />
+              <span>Book Appointment</span>
+            </Link>
+          </div>
         </div>
       ) : (
         Object.entries(grouped).map(([date, appts]) => (

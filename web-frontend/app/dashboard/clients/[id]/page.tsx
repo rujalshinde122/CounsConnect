@@ -3,7 +3,10 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ArrowLeft } from 'lucide-react'
-import ClientNotes from './ClientNotes'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import ClientClinicalHistoryTab from './components/ClientClinicalHistoryTab'
+import SessionTimeline from './components/SessionTimeline'
+import SessionNoteEditor from './components/SessionNoteEditor'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -106,25 +109,49 @@ export default async function ClientDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* SWOT Analysis Card */}
-      {swotFields.some(f => !!client[f.key]) && (
-        <div className="bg-white rounded-xl border border-[#E2E0D6] shadow-2xs p-6">
-          <h3 className="font-bold text-[#2D3A3A] text-sm mb-3">SWOT Assessment</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {swotFields.map(({ key, label, color }) =>
-              client[key] ? (
-                <div key={key} className={`border rounded-lg p-3.5 ${color}`}>
-                  <p className="text-xs font-bold uppercase tracking-wider mb-1 opacity-80">{label}</p>
-                  <p className="text-xs leading-relaxed font-normal">{client[key]}</p>
-                </div>
-              ) : null
-            )}
-          </div>
-        </div>
-      )}
+      {/* Tabs Interface */}
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="w-full justify-start bg-white border border-[#E2E0D6] rounded-xl p-1 mb-6">
+          <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-[#588B8B] data-[state=active]:text-white">At-a-Glance Overview</TabsTrigger>
+          <TabsTrigger value="history" className="rounded-lg data-[state=active]:bg-[#588B8B] data-[state=active]:text-white">Clinical History</TabsTrigger>
+          <TabsTrigger value="timeline" className="rounded-lg data-[state=active]:bg-[#588B8B] data-[state=active]:text-white">Session Timeline</TabsTrigger>
+          <TabsTrigger value="new_note" className="rounded-lg data-[state=active]:bg-[#588B8B] data-[state=active]:text-white">Active Session Note</TabsTrigger>
+        </TabsList>
 
-      {/* Counselor Notes */}
-      <ClientNotes clientId={client.id} initialNotes={client.notes ?? ''} />
+        <TabsContent value="overview" className="space-y-6 mt-0">
+          {/* SWOT Analysis Card */}
+          {swotFields.some(f => !!client[f.key]) && (
+            <div className="bg-white rounded-xl border border-[#E2E0D6] shadow-2xs p-6">
+              <h3 className="font-bold text-[#2D3A3A] text-sm mb-3">SWOT Assessment</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {swotFields.map(({ key, label, color }) =>
+                  client[key] ? (
+                    <div key={key} className={`border rounded-lg p-3.5 ${color}`}>
+                      <p className="text-xs font-bold uppercase tracking-wider mb-1 opacity-80">{label}</p>
+                      <p className="text-xs leading-relaxed font-normal">{client[key]}</p>
+                    </div>
+                  ) : null
+                )}
+              </div>
+            </div>
+          )}
+          <div className="bg-[#F6F5EE]/40 border border-dashed border-[#E2E0D6] rounded-xl p-8 text-center">
+            <p className="text-sm text-[#5A6B6B]">Use the tabs above to access clinical history, past sessions, or write a new session note.</p>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="history" className="mt-0">
+          <ClientClinicalHistoryTab clientId={client.id} />
+        </TabsContent>
+
+        <TabsContent value="timeline" className="mt-0">
+          <SessionTimeline clientId={client.id} />
+        </TabsContent>
+
+        <TabsContent value="new_note" className="mt-0">
+          <SessionNoteEditor clientId={client.id} counselorId={client.counselor_id} />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
