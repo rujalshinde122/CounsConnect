@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { UserPlus } from 'lucide-react'
+import { UserPlus, CalendarPlus } from 'lucide-react'
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
   '/dashboard': { title: 'Overview', subtitle: 'Practice summary and today’s sessions' },
@@ -19,7 +19,7 @@ interface DashboardNavbarProps {
   role?: string
 }
 
-export default function DashboardNavbar({ displayName, initials }: DashboardNavbarProps) {
+export default function DashboardNavbar() {
   const pathname = usePathname()
 
   const current =
@@ -45,18 +45,29 @@ export default function DashboardNavbar({ displayName, initials }: DashboardNavb
           )}
         </div>
 
-        {/* Right: Purposeful Action */}
+        {/* Right: Contextual Action */}
         <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard/clients/new"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#588B8B] hover:bg-[#3D6363] text-white text-xs font-semibold shadow-xs transition-colors"
-          >
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>New Client</span>
-          </Link>
+          {pathname.startsWith('/dashboard/appointments') ? (
+            <Link
+              href="/dashboard/appointments/new"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#588B8B] hover:bg-[#3D6363] text-white text-xs font-semibold shadow-xs transition-colors"
+            >
+              <CalendarPlus className="w-3.5 h-3.5" />
+              <span>New Appointment</span>
+            </Link>
+          ) : (
+            <Link
+              href="/dashboard/clients/new"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#588B8B] hover:bg-[#3D6363] text-white text-xs font-semibold shadow-xs transition-colors"
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>New Client</span>
+            </Link>
+          )}
         </div>
 
       </div>
     </header>
   )
 }
+
