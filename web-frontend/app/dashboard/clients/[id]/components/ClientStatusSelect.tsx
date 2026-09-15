@@ -22,7 +22,8 @@ export default function ClientStatusSelect({ clientId, initialStatus }: Props) {
   const [status, setStatus] = useState(initialStatus)
   const [updating, setUpdating] = useState(false)
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handleStatusChange = async (newStatus: string | null) => {
+    if (!newStatus) return
     setStatus(newStatus)
     setUpdating(true)
     

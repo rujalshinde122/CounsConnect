@@ -178,7 +178,7 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-[#8A6A4B] uppercase tracking-wider">Homework Assigned</label>
-              <Select value={homeworkFrequency} onValueChange={setHomeworkFrequency}>
+              <Select value={homeworkFrequency} onValueChange={(val) => setHomeworkFrequency(val || 'once')}>
                 <SelectTrigger className="w-[110px] h-6 text-[10px] border-[#EBE3D5] bg-[#FFFBF0]/50 text-[#8A6A4B] shadow-none">
                   <SelectValue />
                 </SelectTrigger>
@@ -220,7 +220,7 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
             </div>
             <div className="space-y-2">
               <label className="text-xs font-bold text-[#2D3A3A] uppercase tracking-wider">Clinical Progress</label>
-              <Select value={progressRating} onValueChange={setProgressRating}>
+              <Select value={progressRating} onValueChange={(val) => setProgressRating(val || '3')}>
                 <SelectTrigger className="w-full text-sm border-[#E2E0D6] h-[38px]">
                   <SelectValue placeholder="Select Rating" />
                 </SelectTrigger>
