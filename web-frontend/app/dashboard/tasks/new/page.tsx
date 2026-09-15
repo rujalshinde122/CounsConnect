@@ -294,6 +294,7 @@ export default function NewTaskPage() {
               <Input
                 type="date"
                 value={form.deadline}
+                min={new Date().toISOString().split('T')[0]}
                 onChange={(e) => update('deadline', e.target.value)}
                 className="rounded-lg border-[#E2E0D6] bg-white text-xs sm:text-sm px-3.5 py-2"
               />
