@@ -71,6 +71,7 @@ export interface Task {
   deadline: string | null
   status: TaskStatus
   feedback: string | null
+  session_id: string | null
   created_at: string
   updated_at: string
   // Joined

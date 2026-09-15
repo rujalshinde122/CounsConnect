@@ -30,6 +30,7 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
   const [assessment, setAssessment] = useState('')
   const [plan, setPlan] = useState('')
   const [homework, setHomework] = useState('')
+  const [homeworkFrequency, setHomeworkFrequency] = useState('once')
   const [privateNotes, setPrivateNotes] = useState('')
 
   const handleSave = async () => {
@@ -42,7 +43,7 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
     const { count } = await supabase.from('session_notes').select('*', { count: 'exact', head: true }).eq('client_id', clientId)
     const nextSessionNumber = (count || 0) + 1
 
-    const { error } = await supabase.from('session_notes').insert({
+    const { data: sessionData, error } = await supabase.from('session_notes').insert({
       client_id: clientId,
       counselor_id: counselorId,
       session_number: nextSessionNumber,
@@ -57,16 +58,17 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
       private_clinical_notes: privateNotes,
       tags: tagsArray,
       progress_rating: parseInt(progressRating) || null
-    })
+    }).select('id').single()
     
     // Auto-create task if homework is assigned
-    if (!error && homework.trim() !== '') {
+    if (!error && sessionData?.id && homework.trim() !== '') {
       await supabase.from('tasks').insert({
         counselor_id: counselorId,
         patient_id: clientId,
+        session_id: sessionData.id,
         title: 'Session Homework',
         description: homework.trim(),
-        frequency: 'once',
+        frequency: homeworkFrequency,
         status: 'pending'
       })
     }
@@ -75,7 +77,7 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
     if (!error) {
       setSaved(true)
       // Reset form
-      setSubjective(''); setObjective(''); setAssessment(''); setPlan(''); setHomework(''); setPrivateNotes(''); setTagsInput(''); setProgressRating('3');
+      setSubjective(''); setObjective(''); setAssessment(''); setPlan(''); setHomework(''); setHomeworkFrequency('once'); setPrivateNotes(''); setTagsInput(''); setProgressRating('3');
       setTimeout(() => setSaved(false), 3000)
       if (onSaved) onSaved()
     } else {
@@ -174,7 +176,21 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
 
         <div className="border-t border-[#E2E0D6] pt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-[#8A6A4B] uppercase tracking-wider">Homework Assigned</label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-[#8A6A4B] uppercase tracking-wider">Homework Assigned</label>
+              <Select value={homeworkFrequency} onValueChange={setHomeworkFrequency}>
+                <SelectTrigger className="w-[110px] h-6 text-[10px] border-[#EBE3D5] bg-[#FFFBF0]/50 text-[#8A6A4B] shadow-none">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="biweekly">Bi-weekly</SelectItem>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="once">One-time</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <Textarea 
                 value={homework} onChange={e => setHomework(e.target.value)}
                 placeholder="Activities or reflections assigned to client..."
