@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  // Use standalone mode for Docker (self-hosted Azure), but default on Vercel
+  output: process.env.VERCEL ? undefined : 'standalone',
   images: {
     remotePatterns: [
       // Supabase Cloud
