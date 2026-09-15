@@ -74,19 +74,13 @@ export default function RegisterPage() {
 
       {/* Left */}
       <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#3D6363] via-[#2D4E4E] to-[#263F3F] p-12 lg:p-16 text-white relative overflow-hidden">
-        <div className="absolute bottom-12 right-12 text-white/20 text-7xl font-mono select-none">
-          ✳
-        </div>
         <div className="flex items-center gap-3 relative z-10">
           <div className="w-10 h-10 bg-white text-[#263F3F] rounded-2xl flex items-center justify-center font-extrabold text-base shadow-sm">
             C
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-bold text-base tracking-tight text-white">{t('common.appName')}</span>
-              <span className="text-[#A3E635] text-xs">✳</span>
-            </div>
-            <p className="text-[11px] text-[#DDEAE7] font-medium tracking-wide">{t('common.practiceWorkspace')}</p>
+            <span className="font-bold text-base tracking-tight text-white block">{t('common.appName')}</span>
+            <p className="text-[11px] text-[#DDEAE7] font-medium tracking-wide mt-0.5">{t('common.practiceWorkspace')}</p>
           </div>
         </div>
 

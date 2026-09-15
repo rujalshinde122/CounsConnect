@@ -19,7 +19,7 @@
     "today": "Today",
     "yrs": "yrs",
     "due": "Due",
-    "patient": "Patient",
+    "patient": "Client",
     "status": {
       "active": "Active",
       "inactive": "Inactive",
@@ -50,7 +50,7 @@
       "clients": "Client roster and clinical intake profiles",
       "newClient": "Intake registration form",
       "appointments": "Scheduled counseling sessions",
-      "tasks": "Patient exercises and homework assignments",
+      "tasks": "Client exercises and homework assignments",
       "settings": "Account preferences and security"
     }
   },
@@ -67,7 +67,7 @@
       "forgotPassword": "Forgot password?",
       "registerPrompt": "Don't have an account?",
       "registerLink": "Register practice",
-      "brandQuote": "Empowering therapists and counselors with structured clinical workflows and private patient collaboration.",
+      "brandQuote": "Empowering therapists and counselors with structured clinical workflows and private client collaboration.",
       "featureSecure": "HIPAA & clinical privacy compliant",
       "featureSessions": "Seamless session scheduling & intake",
       "featureTasks": "Therapeutic homework & task tracking"
@@ -102,7 +102,7 @@
       "afternoon": "Good afternoon",
       "evening": "Good evening",
       "counselor": "Counselor",
-      "subtitle": "Manage your counseling sessions, patient records, and practice schedule."
+      "subtitle": "Manage your counseling sessions, client records, and practice schedule."
     },
     "overview": {
       "title": "Overview",
@@ -163,13 +163,13 @@
       "subtitle": "Manage and track your therapy sessions",
       "scheduleButton": "Schedule Session",
       "emptyTitle": "No appointments yet",
-      "emptySubtitle": "Appointments booked by patients will appear here.",
+      "emptySubtitle": "Appointments booked by clients will appear here.",
       "scheduleModal": {
         "title": "Schedule Appointment",
-        "subtitle": "Book a new counseling session for a patient",
-        "selectPatient": "Select Patient / Client",
-        "selectPatientPlaceholder": "Choose a patient...",
-        "noPatients": "No patients found in practice directory",
+        "subtitle": "Book a new counseling session for a client",
+        "selectPatient": "Select Client",
+        "selectPatientPlaceholder": "Choose a client...",
+        "noPatients": "No clients found in practice directory",
         "date": "Session Date",
         "time": "Start Time",
         "duration": "Duration",
@@ -191,13 +191,13 @@
       "subtitle": "Assigned behavioral exercises and check-in tasks",
       "assignTaskButton": "Assign Task",
       "emptyTitle": "No active tasks",
-      "emptySubtitle": "Exercises and assignments assigned to patients will appear here.",
+      "emptySubtitle": "Exercises and assignments assigned to clients will appear here.",
       "createModal": {
         "title": "Assign Therapeutic Task",
-        "subtitle": "Create an exercise or behavioral assignment for a patient",
-        "selectPatient": "Select Patient / Client",
-        "selectPatientPlaceholder": "Choose a patient...",
-        "noPatients": "No patients found in practice directory",
+        "subtitle": "Create an exercise or behavioral assignment for a client",
+        "selectPatient": "Select Client",
+        "selectPatientPlaceholder": "Choose a client...",
+        "noPatients": "No clients found in practice directory",
         "taskTitle": "Task Title",
         "titlePlaceholder": "e.g., Daily Thought Log, Deep Breathing 10 mins",
         "instructions": "Instructions / Description",
@@ -218,7 +218,7 @@
       "securitySubtitle": "Update your account password and security credentials",
       "languageSection": "Language & Locale",
       "languageSubtitle": "Select your preferred language across the entire application",
-      "languageHelp": "This preference applies to all dashboard navigation, patient records, sessions, and settings.",
+      "languageHelp": "This preference applies to all dashboard navigation, client records, sessions, and settings.",
       "profileSaved": "Profile changes saved successfully!",
       "passwordSaved": "Password updated successfully!"
     }

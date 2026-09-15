@@ -4,7 +4,6 @@ import type { Metadata } from 'next'
 import type { Client, Task } from '@/lib/types'
 import PracticeStats from '@/components/dashboard/PracticeStats'
 import TodaySchedule from '@/components/dashboard/TodaySchedule'
-import SessionInfoCard from '@/components/dashboard/SessionInfoCard'
 import PendingTasksCard from '@/components/dashboard/PendingTasksCard'
 import RecentClientsCard from '@/components/dashboard/RecentClientsCard'
 
@@ -61,7 +60,7 @@ export default async function DashboardPage() {
           Good {getGreeting()}, {displayName}
         </h1>
         <p className="text-xs text-[#5A6B6B] mt-0.5">
-          Manage your counseling sessions, patient records, and practice schedule.
+          Manage your counseling sessions, client records, and practice schedule.
         </p>
       </div>
 
@@ -73,15 +72,8 @@ export default async function DashboardPage() {
         pendingTasksCount={pendingTasks?.length ?? 0}
       />
 
-      {/* Main Row: Today's Schedule (8 cols) + Session Info & Slots (4 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-          <TodaySchedule todayAppts={todayAppts} />
-        </div>
-        <div className="lg:col-span-4">
-          <SessionInfoCard />
-        </div>
-      </div>
+      {/* Main Row: Today's Schedule */}
+      <TodaySchedule todayAppts={todayAppts} />
 
       {/* Secondary Row: Recent Clients (6 cols) + Pending Tasks (6 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

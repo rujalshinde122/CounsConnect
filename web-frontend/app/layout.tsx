@@ -30,11 +30,11 @@ export const metadata: Metadata = {
     default: 'CounsConnect — Clinical Practice & Therapy Management',
     template: '%s | CounsConnect',
   },
-  description: 'Professional counseling management platform — connect counselors with patients seamlessly.',
+  description: 'Professional counseling management platform — connect counselors with clients seamlessly.',
   keywords: ['counseling', 'therapy', 'mental health', 'appointment scheduling', 'clinical practice'],
   openGraph: {
     title: 'CounsConnect — Clinical Practice & Therapy Management',
-    description: 'Professional counseling management platform — connect counselors with patients seamlessly.',
+    description: 'Professional counseling management platform — connect counselors with clients seamlessly.',
     url: 'https://counsconnect.centralindia.cloudapp.azure.com',
     siteName: 'CounsConnect',
     images: [
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'CounsConnect — Clinical Practice & Therapy Management',
-    description: 'Professional counseling management platform — connect counselors with patients seamlessly.',
+    description: 'Professional counseling management platform — connect counselors with clients seamlessly.',
     images: ['/og-image.png'],
   },
   icons: {

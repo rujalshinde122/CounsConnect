@@ -56,12 +56,12 @@ export default function ClientsView({ clients }: ClientsViewProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-[#2D3A3A] tracking-tight flex items-center gap-2.5">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-[#2D3A3A] tracking-tight flex items-center gap-2.5">
             <span>{t('dashboard.clients.title')}</span>
             <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#588B8B]/10 text-[#588B8B] border border-[#588B8B]/20">
               {clients?.length ?? 0}
             </span>
-          </h2>
+          </h1>
           <p className="text-xs text-[#5A6B6B] mt-0.5">
             {t('dashboard.clients.subtitle')}
           </p>
@@ -193,7 +193,7 @@ export default function ClientsView({ clients }: ClientsViewProps) {
                     </div>
                   </div>
 
-                  <span className="text-xs text-[#5A6B6B] font-mono font-medium">
+                  <span className="text-xs text-[#5A6B6B] font-medium">
                     {client.age} {t('common.yrs')}
                   </span>
                   <span className="text-xs text-[#5A6B6B] font-medium">{client.gender}</span>

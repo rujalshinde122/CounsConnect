@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 interface LanguageSwitcherProps {
   className?: string;
-  variant?: 'navbar' | 'auth' | 'compact';
+  variant?: 'navbar' | 'auth' | 'compact' | 'sidebar';
 }
 
 export default function LanguageSwitcher({ className, variant = 'navbar' }: LanguageSwitcherProps) {
@@ -51,7 +51,7 @@ export default function LanguageSwitcher({ className, variant = 'navbar' }: Lang
   };
 
   return (
-    <div className={cn('relative inline-block text-left', className)} ref={dropdownRef}>
+    <div className={cn('relative text-left', variant === 'sidebar' ? 'w-full block' : 'inline-block', className)} ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -59,26 +59,35 @@ export default function LanguageSwitcher({ className, variant = 'navbar' }: Lang
         aria-expanded={isOpen}
         aria-label="Select Language"
         className={cn(
-          'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer select-none',
-          variant === 'auth'
-            ? 'bg-white/90 hover:bg-white text-[#2D3A3A] border border-[#E2E0D6] shadow-sm backdrop-blur-xs'
-            : 'bg-white hover:bg-white/90 text-[#2D3A3A] border border-[#E2E0D6] shadow-2xs hover:border-[#588B8B]/40'
+          'transition-all cursor-pointer select-none',
+          variant === 'sidebar'
+            ? 'w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-[#5A6B6B] hover:text-[#2D3A3A] hover:bg-white/60 duration-150'
+            : variant === 'auth'
+            ? 'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/90 hover:bg-white text-[#2D3A3A] border border-[#E2E0D6] shadow-sm backdrop-blur-xs'
+            : 'inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-white hover:bg-white/90 text-[#2D3A3A] border border-[#E2E0D6] shadow-2xs hover:border-[#588B8B]/40'
         )}
       >
-        <Globe className="w-3.5 h-3.5 text-[#588B8B] shrink-0" />
-        <span className="font-semibold">{activeLang.native}</span>
-        {variant !== 'compact' && (
-          <span className="text-[10px] text-[#5A6B6B] hidden sm:inline">
-            ({activeLang.label})
-          </span>
-        )}
-        <ChevronDown className={cn('w-3 h-3 text-[#5A6B6B] transition-transform duration-200', isOpen && 'rotate-180')} />
+        <div className="flex items-center gap-3 min-w-0">
+          <Globe className={cn('w-4 h-4 shrink-0', variant === 'sidebar' ? 'text-[#889898]' : 'text-[#588B8B]')} />
+          <span className="font-semibold truncate">{activeLang.native}</span>
+          {variant !== 'compact' && (
+            <span className="text-[10px] text-[#5A6B6B] font-normal truncate hidden sm:inline">
+              ({activeLang.label})
+            </span>
+          )}
+        </div>
+        <ChevronDown className={cn('w-3.5 h-3.5 text-[#889898] shrink-0 transition-transform duration-200', isOpen && 'rotate-180')} />
       </button>
 
       {isOpen && (
         <div
           role="listbox"
-          className="absolute right-0 mt-1.5 w-44 rounded-xl bg-white border border-[#E2E0D6] shadow-lg py-1.5 z-50 animate-in fade-in-50 zoom-in-95 duration-100"
+          className={cn(
+            'rounded-xl bg-white border border-[#E2E0D6] shadow-xl py-1.5 z-50 animate-in fade-in-50 zoom-in-95 duration-100',
+            variant === 'sidebar'
+              ? 'absolute bottom-full left-0 mb-1.5 w-full'
+              : 'absolute right-0 mt-1.5 w-44'
+          )}
         >
           <div className="px-3 py-1 text-[10px] font-semibold text-[#889898] uppercase tracking-wider border-b border-[#E2E0D6]/50 mb-1">
             Choose Language / भाषा निवडा

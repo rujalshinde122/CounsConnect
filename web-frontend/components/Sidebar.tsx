@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import { useLanguage } from '@/context/LanguageContext'
+import LanguageSwitcher from './LanguageSwitcher'
 import {
   LayoutDashboard,
   Users,
@@ -54,12 +55,9 @@ export default function Sidebar({ displayName, initials, role }: SidebarProps) {
             C
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-sm tracking-tight text-[#2D3A3A] block leading-tight">
-                {t('common.appName')}
-              </span>
-              <span className="text-[#84CC16] text-[10px]">✳</span>
-            </div>
+            <span className="font-extrabold text-sm tracking-tight text-[#2D3A3A] block leading-tight">
+              {t('common.appName')}
+            </span>
             <p className="text-[11px] text-[#5A6B6B] font-medium leading-tight mt-0.5">
               {t('common.practiceWorkspace')}
             </p>
@@ -102,6 +100,8 @@ export default function Sidebar({ displayName, initials, role }: SidebarProps) {
 
       {/* User & Settings Footer */}
       <div className="p-3.5 border-t border-[#E2E0D6]/80 space-y-1 bg-[#F6F5EE]/60">
+        <LanguageSwitcher variant="sidebar" />
+
         <Link
           href="/dashboard/settings"
           className={cn(

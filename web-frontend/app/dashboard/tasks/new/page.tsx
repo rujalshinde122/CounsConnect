@@ -81,7 +81,7 @@ export default function NewTaskPage() {
     setError('')
 
     if (!form.patientId) {
-      setError(t('dashboard.tasks.createModal.selectPatientPlaceholder') || 'Please select a patient.')
+      setError(t('dashboard.tasks.createModal.selectPatientPlaceholder') || 'Please select a client.')
       setSubmitting(false)
       return
     }
@@ -183,7 +183,7 @@ export default function NewTaskPage() {
               </select>
               {patients.length === 0 && !loadingPatients && (
                 <p className="text-[11px] text-amber-700 mt-1">
-                  No registered patient accounts found. Patients must register or sign in via the patient mobile app.
+                  No registered client accounts found. Clients must register or sign in via the mobile app.
                 </p>
               )}
             </div>

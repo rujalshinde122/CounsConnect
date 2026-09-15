@@ -61,45 +61,17 @@ export default function TasksView({ tasks }: TasksViewProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-[#2D3A3A] tracking-tight flex items-center gap-2.5">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-[#2D3A3A] tracking-tight flex items-center gap-2.5">
             <span>{t('dashboard.tasks.title')}</span>
             <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#588B8B]/10 text-[#588B8B] border border-[#588B8B]/20">
               {tasks?.length ?? 0}
             </span>
-          </h2>
+          </h1>
           <p className="text-xs text-[#5A6B6B] mt-0.5">{t('dashboard.tasks.subtitle')}</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Filter Tabs */}
-          <div className="flex items-center gap-1.5 p-1 bg-white rounded-2xl border border-[#E2E0D6] shadow-xs">
-            {[
-              { key: 'all', label: 'All', count: counts.all },
-              { key: 'pending', label: t('common.status.pending'), count: counts.pending },
-              { key: 'completed', label: t('common.status.completed'), count: counts.completed },
-            ].map((tab) => {
-              const isSelected = filter === tab.key
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => setFilter(tab.key)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                    isSelected
-                      ? 'bg-[#588B8B] text-white shadow-2xs'
-                      : 'text-[#5A6B6B] hover:text-[#2D3A3A] hover:bg-[#F6F5EE]'
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'bg-[#E2E0D6] text-[#5A6B6B]'}`}>
-                    {tab.count}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-
-          {/* Assign Task Action Button (Navigates to dedicated page) */}
+        <div className="flex items-center gap-3">
+          {/* Assign Task Action Button */}
           <Link
             href="/dashboard/tasks/new"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#588B8B] to-[#457070] hover:from-[#457070] hover:to-[#365959] text-white text-xs font-bold shadow-xs hover:shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shrink-0"
@@ -110,16 +82,45 @@ export default function TasksView({ tasks }: TasksViewProps) {
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="bg-white rounded-2xl border border-[#E2E0D6] p-2.5 shadow-xs flex items-center gap-3">
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 text-[#889898] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+      {/* Filter & Search Bar */}
+      <div className="bg-white rounded-2xl border border-[#E2E0D6] p-3 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Filter Tabs */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+          {[
+            { key: 'all', label: 'All', count: counts.all },
+            { key: 'pending', label: t('common.status.pending'), count: counts.pending },
+            { key: 'completed', label: t('common.status.completed'), count: counts.completed },
+          ].map((tab) => {
+            const isSelected = filter === tab.key
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setFilter(tab.key)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                  isSelected
+                    ? 'bg-[#588B8B] text-white shadow-2xs'
+                    : 'text-[#5A6B6B] hover:text-[#2D3A3A] hover:bg-[#F6F5EE]'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'bg-[#E2E0D6] text-[#5A6B6B]'}`}>
+                  {tab.count}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative w-full sm:w-72">
+          <Search className="w-4 h-4 text-[#889898] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={t('common.search')}
-            className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#F6F5EE]/70 hover:bg-[#F6F5EE] focus:bg-white text-xs sm:text-sm text-[#2D3A3A] placeholder-[#889898] border border-transparent focus:border-[#588B8B] focus:outline-none transition-all"
+            className="w-full pl-9 pr-8 py-1.5 rounded-xl bg-[#F6F5EE]/70 hover:bg-[#F6F5EE] focus:bg-white text-xs sm:text-sm text-[#2D3A3A] placeholder-[#889898] border border-transparent focus:border-[#588B8B] focus:outline-none transition-all"
           />
           {searchTerm && (
             <button
