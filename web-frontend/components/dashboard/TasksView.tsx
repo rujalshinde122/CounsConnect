@@ -7,7 +7,7 @@ import type { Task } from '@/lib/types'
 import { useLanguage } from '@/context/LanguageContext'
 
 interface TasksViewProps {
-  tasks: (Task & { patient?: { name: string | null; email: string } })[] | null
+  tasks: (Task & { patient?: { name: string | null } })[] | null
 }
 
 const STATUS_CLASSES: Record<string, string> = {

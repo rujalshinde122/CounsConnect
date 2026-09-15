@@ -11,11 +11,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, CheckSquare, User, Calendar, AlertCircle } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 
-interface PatientProfile {
+interface ClientOption {
   id: string
   name: string | null
-  email: string
-  role: string
 }
 
 const FREQUENCIES = [
@@ -31,7 +29,7 @@ export default function NewTaskPage() {
   const { t } = useLanguage()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const [patients, setPatients] = useState<PatientProfile[]>([])
+  const [patients, setPatients] = useState<ClientOption[]>([])
   const [loadingPatients, setLoadingPatients] = useState(true)
 
   const getTomorrowStr = () => {
@@ -56,11 +54,14 @@ export default function NewTaskPage() {
       setLoadingPatients(true)
       const supabase = createClient()
       
-      // Query profiles strictly for role 'patient' so counselors are NEVER shown
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      // Query clients strictly for this counselor
       const { data, error } = await supabase
-        .from('profiles')
-        .select('id, name, email, role')
-        .eq('role', 'patient')
+        .from('clients')
+        .select('id, name')
+        .eq('counselor_id', user.id)
         .order('name')
 
       if (!error && data) {
@@ -176,14 +177,14 @@ export default function NewTaskPage() {
                 ) : (
                   patients.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name ? `${p.name} (${p.email})` : p.email}
+                      {p.name || 'Unnamed Client'}
                     </option>
                   ))
                 )}
               </select>
               {patients.length === 0 && !loadingPatients && (
                 <p className="text-[11px] text-amber-700 mt-1">
-                  No registered client accounts found. Clients must register or sign in via the mobile app.
+                  No clients found in your practice. Please add a client first.
                 </p>
               )}
             </div>

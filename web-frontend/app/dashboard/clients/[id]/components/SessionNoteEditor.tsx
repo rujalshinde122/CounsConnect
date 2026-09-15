@@ -59,6 +59,18 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
       progress_rating: parseInt(progressRating) || null
     })
     
+    // Auto-create task if homework is assigned
+    if (!error && homework.trim() !== '') {
+      await supabase.from('tasks').insert({
+        counselor_id: counselorId,
+        patient_id: clientId,
+        title: 'Session Homework',
+        description: homework.trim(),
+        frequency: 'once',
+        status: 'pending'
+      })
+    }
+
     setSaving(false)
     if (!error) {
       setSaved(true)

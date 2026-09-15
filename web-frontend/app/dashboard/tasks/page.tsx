@@ -15,10 +15,10 @@ export default async function TasksPage() {
     .from('tasks')
     .select(`
       *,
-      patient:profiles!tasks_patient_id_fkey(name, email)
+      patient:clients!tasks_patient_id_fkey(name)
     `)
     .eq('counselor_id', user.id)
     .order('created_at', { ascending: false })
 
-  return <TasksView tasks={tasks as unknown as (Task & { patient?: { name: string | null; email: string } })[]} />
+  return <TasksView tasks={tasks as unknown as (Task & { patient?: { name: string | null } })[]} />
 }

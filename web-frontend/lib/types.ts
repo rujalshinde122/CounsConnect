@@ -74,7 +74,7 @@ export interface Task {
   created_at: string
   updated_at: string
   // Joined
-  patient?: Pick<Profile, 'name' | 'email'>
+  patient?: Pick<Client, 'name'>
 }
 
 export interface CheckIn {

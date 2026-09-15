@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ClientClinicalHistoryTab from './components/ClientClinicalHistoryTab'
 import SessionTimeline from './components/SessionTimeline'
 import SessionNoteEditor from './components/SessionNoteEditor'
+import TasksView from '@/components/dashboard/TasksView'
+import type { Task } from '@/lib/types'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -42,6 +44,15 @@ export default async function ClientDetailPage({ params }: PageProps) {
     .select('*')
     .eq('client_id', id)
     .single()
+
+  const { data: clientTasks } = await supabase
+    .from('tasks')
+    .select(`
+      *,
+      patient:clients!tasks_patient_id_fkey(name)
+    `)
+    .eq('patient_id', id)
+    .order('created_at', { ascending: false })
 
 
   const swotFields = [
@@ -118,11 +129,12 @@ export default async function ClientDetailPage({ params }: PageProps) {
 
       {/* Tabs Interface */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="w-full justify-start bg-white border border-[#E2E0D6] rounded-xl p-1 mb-6">
+        <TabsList className="w-full justify-start bg-white border border-[#E2E0D6] rounded-xl p-1 mb-6 flex-wrap h-auto">
           <TabsTrigger value="overview" className="rounded-lg data-[state=active]:bg-[#588B8B] data-[state=active]:text-white">At-a-Glance Overview</TabsTrigger>
           <TabsTrigger value="history" className="rounded-lg data-[state=active]:bg-[#588B8B] data-[state=active]:text-white">Clinical History</TabsTrigger>
           <TabsTrigger value="timeline" className="rounded-lg data-[state=active]:bg-[#588B8B] data-[state=active]:text-white">Session Timeline</TabsTrigger>
           <TabsTrigger value="new_note" className="rounded-lg data-[state=active]:bg-[#588B8B] data-[state=active]:text-white">Active Session Note</TabsTrigger>
+          <TabsTrigger value="tasks" className="rounded-lg data-[state=active]:bg-[#588B8B] data-[state=active]:text-white">Tasks</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6 mt-0">
@@ -195,6 +207,10 @@ export default async function ClientDetailPage({ params }: PageProps) {
 
         <TabsContent value="new_note" className="mt-0">
           <SessionNoteEditor clientId={client.id} counselorId={client.counselor_id} />
+        </TabsContent>
+
+        <TabsContent value="tasks" className="mt-0">
+          <TasksView tasks={clientTasks as unknown as (Task & { patient?: { name: string | null } })[]} />
         </TabsContent>
       </Tabs>
     </div>
