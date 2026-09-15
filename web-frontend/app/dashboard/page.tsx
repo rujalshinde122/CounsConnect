@@ -37,7 +37,8 @@ export default async function DashboardPage() {
     supabase.from('appointments').select('*, patient:clients!appointments_patient_id_fkey(name)')
       .eq('counselor_id', user.id)
       .gte('start_time', todayStart).lte('start_time', todayEnd).order('start_time'),
-    supabase.from('clients').select('*', { count: 'exact', head: true }).eq('counselor_id', user.id),
+    supabase.from('clients').select('*', { count: 'exact', head: true })
+      .eq('counselor_id', user.id).eq('status', 'Active'),
     supabase.from('clients').select('*', { count: 'exact', head: true })
       .eq('counselor_id', user.id).gte('created_at', weekAgo),
     supabase.from('tasks').select('id, title, deadline, status, patient:clients!tasks_patient_id_fkey(name)')

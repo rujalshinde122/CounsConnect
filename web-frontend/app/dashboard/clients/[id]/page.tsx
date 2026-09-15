@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ClientClinicalHistoryTab from './components/ClientClinicalHistoryTab'
 import SessionTimeline from './components/SessionTimeline'
 import SessionNoteEditor from './components/SessionNoteEditor'
+import ClientStatusSelect from './components/ClientStatusSelect'
 import TasksView from '@/components/dashboard/TasksView'
 import type { Task } from '@/lib/types'
 
@@ -82,9 +83,7 @@ export default async function ClientDetailPage({ params }: PageProps) {
           <div>
             <div className="flex items-center gap-3">
               <h2 className="text-xl font-bold text-[#2D3A3A] tracking-tight">{client.name}</h2>
-              <span className={`text-xs px-2 py-0.5 rounded border font-medium ${statusCls}`}>
-                {client.status}
-              </span>
+              <ClientStatusSelect clientId={client.id} initialStatus={client.status || 'Active'} />
             </div>
 
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#5A6B6B]">
