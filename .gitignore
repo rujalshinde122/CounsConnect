@@ -55,7 +55,6 @@ config.local.js
 
 # Local Documentation, Architecture Notes & Design Assets
 docs/
-
 *.pdf
 UIDesign/
 

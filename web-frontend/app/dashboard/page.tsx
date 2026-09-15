@@ -18,6 +18,11 @@ function getDateRanges() {
   return { todayStart, todayEnd, weekAgo }
 }
 
+function getGreeting() {
+  const h = new Date().getHours()
+  return h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening'
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -86,9 +91,4 @@ export default async function DashboardPage() {
 
     </div>
   )
-}
-
-function getGreeting() {
-  const h = new Date().getHours()
-  return h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening'
 }

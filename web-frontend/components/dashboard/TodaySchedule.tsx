@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Video, MapPin } from 'lucide-react'
 import type { Appointment } from '@/lib/types'
 import AppointmentActions from '@/app/dashboard/appointments/AppointmentActions'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface TodayScheduleProps {
   todayAppts?: Appointment[] | null
@@ -17,6 +18,7 @@ const STATUS_CLASSES: Record<string, string> = {
 }
 
 export default function TodaySchedule({ todayAppts }: TodayScheduleProps) {
+  const { t, locale } = useLanguage()
   const hasSessions = todayAppts && todayAppts.length > 0
 
   return (
@@ -24,9 +26,13 @@ export default function TodaySchedule({ todayAppts }: TodayScheduleProps) {
       {/* Header */}
       <div className="px-6 py-4 border-b border-[#E2E0D6] flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-bold text-[#2D3A3A]">Today&apos;s Schedule</h2>
+          <h2 className="text-sm font-bold text-[#2D3A3A]">{t('dashboard.overview.todaySchedule.title')}</h2>
           <p className="text-xs text-[#5A6B6B] mt-0.5">
-            {hasSessions ? `${todayAppts.length} session${todayAppts.length > 1 ? 's' : ''} today` : 'No sessions scheduled'}
+            {hasSessions
+              ? (todayAppts.length > 1
+                  ? t('dashboard.overview.todaySchedule.sessionsTodayPlural', { count: todayAppts.length })
+                  : t('dashboard.overview.todaySchedule.sessionsToday', { count: todayAppts.length }))
+              : t('dashboard.overview.todaySchedule.empty')}
           </p>
         </div>
 
@@ -34,29 +40,31 @@ export default function TodaySchedule({ todayAppts }: TodayScheduleProps) {
           href="/dashboard/appointments"
           className="text-xs font-semibold text-[#588B8B] hover:text-[#3D6363] hover:underline"
         >
-          View all
+          {t('common.viewAll')}
         </Link>
       </div>
 
       {/* Content */}
       {!hasSessions ? (
         <div className="py-12 px-6 text-center space-y-3">
-          <p className="text-xs font-medium text-[#5A6B6B]">No sessions scheduled for today</p>
+          <p className="text-xs font-medium text-[#5A6B6B]">{t('dashboard.overview.todaySchedule.empty')}</p>
           <Link
             href="/dashboard/appointments"
             className="inline-block px-3 py-1.5 rounded-lg border border-[#E2E0D6] hover:bg-[#F6F5EE] text-xs font-semibold text-[#2D3A3A] transition-colors"
           >
-            View calendar
+            {t('common.viewCalendar')}
           </Link>
         </div>
       ) : (
         <div className="divide-y divide-[#E2E0D6]/60">
           {todayAppts.map((appt) => {
-            const timeStr = new Date(appt.start_time).toLocaleTimeString('en-US', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })
+            const timeStr = new Date(appt.start_time).toLocaleTimeString(
+              locale === 'hi' ? 'hi-IN' : locale === 'mr' ? 'mr-IN' : 'en-US',
+              { hour: '2-digit', minute: '2-digit' }
+            )
             const statusCls = STATUS_CLASSES[appt.status] || STATUS_CLASSES.pending
+            const statusLabel = t(`common.status.${appt.status}`) || appt.status
+            const clientName = appt.patient?.name || t('common.patient')
 
             return (
               <div
@@ -70,16 +78,16 @@ export default function TodaySchedule({ todayAppts }: TodayScheduleProps) {
 
                   <div className="min-w-0">
                     <p className="text-xs font-semibold text-[#2D3A3A] truncate">
-                      {appt.patient?.name || 'Patient Session'}
+                      {clientName}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5 text-xs text-[#5A6B6B]">
                       {appt.location === 'video' ? (
                         <span className="flex items-center gap-1">
-                          <Video className="w-3 h-3 text-[#588B8B]" /> Online Video
+                          <Video className="w-3 h-3 text-[#588B8B]" /> {t('common.onlineVideo')}
                         </span>
                       ) : (
                         <span className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-[#FF8A65]" /> In-Person
+                          <MapPin className="w-3 h-3 text-[#FF8A65]" /> {t('common.inPerson')}
                         </span>
                       )}
                       {appt.notes && (
@@ -93,7 +101,7 @@ export default function TodaySchedule({ todayAppts }: TodayScheduleProps) {
 
                 <div className="flex items-center gap-3 shrink-0">
                   <span className={`text-xs px-2 py-0.5 rounded border capitalize font-medium ${statusCls}`}>
-                    {appt.status}
+                    {statusLabel}
                   </span>
 
                   {['pending', 'confirmed'].includes(appt.status) && (

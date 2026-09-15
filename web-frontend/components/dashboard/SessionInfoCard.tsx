@@ -1,8 +1,10 @@
 'use client'
 
 import { Clock } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function SessionInfoCard() {
+  const { t } = useLanguage()
   const offlineSlots = ['11:00 AM', '12:30 PM', '2:00 PM', '3:30 PM']
   const onlineSlots = ['8:00 AM', '8:00 PM']
 
@@ -10,8 +12,8 @@ export default function SessionInfoCard() {
     <div className="bg-white rounded-xl border border-[#E2E0D6] shadow-2xs overflow-hidden h-full flex flex-col justify-between">
       <div className="px-6 py-4 border-b border-[#E2E0D6] flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-bold text-[#2D3A3A]">Practice Availability</h2>
-          <p className="text-xs text-[#5A6B6B] mt-0.5">Regular consultation time slots</p>
+          <h2 className="text-sm font-bold text-[#2D3A3A]">{t('dashboard.overview.availability.title')}</h2>
+          <p className="text-xs text-[#5A6B6B] mt-0.5">{t('dashboard.overview.availability.subtitle')}</p>
         </div>
         <Clock className="w-4 h-4 text-[#588B8B]" />
       </div>
@@ -20,7 +22,7 @@ export default function SessionInfoCard() {
         {/* Offline Slots */}
         <div>
           <p className="font-semibold text-[#5A6B6B] mb-2 uppercase tracking-wide text-[11px]">
-            Offline In-Person (Mon–Fri)
+            {t('dashboard.overview.availability.offlineSlots')}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {offlineSlots.map((slot) => (
@@ -37,7 +39,7 @@ export default function SessionInfoCard() {
         {/* Online Slots */}
         <div className="pt-3 border-t border-[#E2E0D6]/60">
           <p className="font-semibold text-[#5A6B6B] mb-2 uppercase tracking-wide text-[11px]">
-            Online Video (Mon–Fri)
+            {t('dashboard.overview.availability.onlineSlots')}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {onlineSlots.map((slot) => (

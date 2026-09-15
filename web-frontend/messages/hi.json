@@ -1,0 +1,226 @@
+{
+  "common": {
+    "appName": "काउंसकनेक्ट",
+    "practiceWorkspace": "क्लिनिकल वर्कस्पेस",
+    "newClient": "नया क्लाइंट",
+    "signOut": "साइन आउट",
+    "settings": "सेटिंग्स",
+    "loading": "लोड हो रहा है...",
+    "save": "बदलाव सहेजें",
+    "cancel": "रद्द करें",
+    "search": "खोजें...",
+    "language": "भाषा",
+    "selectLanguage": "भाषा चुनें",
+    "chooseLanguage": "पसंदीदा भाषा चुनें",
+    "viewAll": "सभी देखें",
+    "viewCalendar": "कैलेंडर देखें",
+    "onlineVideo": "ऑनलाइन वीडियो",
+    "inPerson": "प्रत्यक्ष (इन-पर्सन)",
+    "today": "आज",
+    "yrs": "वर्ष",
+    "due": "नियत तिथि",
+    "patient": "मरीज",
+    "status": {
+      "active": "सक्रिय",
+      "inactive": "निष्क्रिय",
+      "onHold": "होल्ड पर",
+      "completed": "पूर्ण",
+      "pending": "लंबित",
+      "upcoming": "आगामी",
+      "scheduled": "निर्धारित",
+      "cancelled": "रद्द",
+      "confirmed": "पुष्ट"
+    },
+    "frequency": {
+      "once": "एक बार",
+      "daily": "दैनिक",
+      "weekly": "साप्ताहिक",
+      "biweekly": "पाक्षिक",
+      "monthly": "मासिक"
+    }
+  },
+  "nav": {
+    "overview": "ओवरव्यू",
+    "clients": "क्लाइंट्स",
+    "appointments": "अपॉइंटमेंट्स",
+    "tasks": "कार्य (टास्क)",
+    "settings": "सेटिंग्स",
+    "subtitles": {
+      "overview": "क्लिनिक का सारांश और आज के सत्र",
+      "clients": "क्लाइंट सूची और इनटेक प्रोफाइल",
+      "newClient": "नया इनटेक पंजीकरण फॉर्म",
+      "appointments": "निर्धारित काउंसलिंग सत्र",
+      "tasks": "मरीजों के अभ्यास और कार्य",
+      "settings": "खाता प्राथमिकताएं और सुरक्षा"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "पुनः स्वागत है",
+      "subtitle": "अपने काउंसलर वर्कस्पेस में प्रवेश के लिए साइन इन करें",
+      "emailLabel": "ईमेल पता",
+      "emailPlaceholder": "counselor@practice.com",
+      "passwordLabel": "पासवर्ड",
+      "passwordPlaceholder": "••••••••",
+      "submitButton": "साइन इन करें",
+      "signingIn": "साइन इन हो रहा है...",
+      "forgotPassword": "पासवर्ड भूल गए?",
+      "registerPrompt": "खाता नहीं है?",
+      "registerLink": "प्रैक्टिस पंजीकृत करें",
+      "brandQuote": "थेरेपिस्ट और काउंसलर्स को संरचित क्लिनिकल वर्कफ़्लो और सुरक्षित मरीज समन्वय के साथ सशक्त बनाना।",
+      "featureSecure": "HIPAA और क्लिनिकल गोपनीयता अनुपालन",
+      "featureSessions": "सुगम सत्र निर्धारण और इनटेक",
+      "featureTasks": "थेरेप्यूटिक गृहकार्य और कार्य ट्रैकिंग"
+    },
+    "register": {
+      "title": "प्रैक्टिस खाता बनाएं",
+      "subtitle": "काउंसकनेक्ट क्लिनिकल प्रबंधन के साथ शुरुआत करें",
+      "fullNameLabel": "पूरा नाम",
+      "fullNamePlaceholder": "डॉ. सारा जेनकिंस",
+      "emailLabel": "ईमेल पता",
+      "emailPlaceholder": "sarah@practice.com",
+      "passwordLabel": "पासवर्ड",
+      "confirmPasswordLabel": "पासवर्ड की पुष्टि करें",
+      "submitButton": "प्रैक्टिस पंजीकृत करें",
+      "registering": "पंजीकरण हो रहा है...",
+      "loginPrompt": "पहले से खाता है?",
+      "loginLink": "साइन इन करें"
+    },
+    "forgotPassword": {
+      "title": "पासवर्ड रीसेट करें",
+      "subtitle": "पासवर्ड रीसेट लिंक प्राप्त करने के लिए अपना ईमेल दर्ज करें",
+      "emailLabel": "ईमेल पता",
+      "submitButton": "रीसेट लिंक भेजें",
+      "sending": "लिंक भेजा जा रहा है...",
+      "backToLogin": "साइन इन पर वापस जाएं",
+      "successMessage": "पासवर्ड रीसेट लिंक के लिए अपना ईमेल देखें।"
+    }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "शुभ प्रभात",
+      "afternoon": "शुभ दोपहर",
+      "evening": "शुभ संध्या",
+      "counselor": "काउंसलर",
+      "subtitle": "अपने काउंसलिंग सत्र, मरीज रिकॉर्ड और अभ्यास कार्यक्रम का प्रबंधन करें।"
+    },
+    "overview": {
+      "title": "ओवरव्यू",
+      "subtitle": "क्लिनिक का सारांश और आज के सत्र",
+      "stats": {
+        "todaySessions": "आज के सत्र",
+        "todaySessionsSubtext": "आज निर्धारित",
+        "totalClients": "कुल क्लाइंट्स",
+        "totalClientsSubtext": "सक्रिय केसलोड",
+        "newThisWeek": "इस सप्ताह नए",
+        "newThisWeekSubtext": "पिछले 7 दिन",
+        "pendingTasks": "लंबित कार्य",
+        "pendingTasksSubtext": "क्लाइंट असाइनमेंट"
+      },
+      "todaySchedule": {
+        "title": "आज का शेड्यूल",
+        "sessionsToday": "आज {count} सत्र",
+        "sessionsTodayPlural": "आज {count} सत्र",
+        "empty": "आज के लिए कोई सत्र निर्धारित नहीं है"
+      },
+      "availability": {
+        "title": "उपलब्धता",
+        "subtitle": "नियमित परामर्श समय स्लॉट",
+        "offlineSlots": "प्रत्यक्ष इन-पर्सन (सोम–शुक्र)",
+        "onlineSlots": "ऑनलाइन वीडियो (सोम–शुक्र)"
+      },
+      "recentClients": {
+        "title": "हाल के क्लाइंट्स",
+        "subtitle": "केसलोड स्नैपशॉट",
+        "empty": "अभी तक कोई क्लाइंट पंजीकृत नहीं है"
+      },
+      "pendingTasks": {
+        "title": "लंबित कार्य",
+        "subtitle": "असाइन किए गए अभ्यास",
+        "empty": "कोई लंबित कार्य नहीं"
+      }
+    },
+    "clients": {
+      "title": "क्लाइंट्स",
+      "subtitle": "क्लाइंट प्रोफाइल और केस नोट्स का प्रबंधन करें",
+      "searchPlaceholder": "नाम या ईमेल से खोजें...",
+      "newClientButton": "नया क्लाइंट जोड़ें",
+      "totalClients": "कुल {count} क्लाइंट्स",
+      "emptyTitle": "अभी तक कोई क्लाइंट पंजीकृत नहीं है",
+      "emptySubtitle": "नोट्स, सत्र और कार्य असाइनमेंट प्रबंधित करने के लिए अपना पहला क्लाइंट जोड़ें।",
+      "addFirstClient": "पहला क्लाइंट जोड़ें",
+      "table": {
+        "name": "क्लाइंट का नाम",
+        "age": "उम्र",
+        "gender": "लिंग",
+        "status": "स्थिति",
+        "lastSession": "अंतिम सत्र",
+        "actions": "कार्रवाई"
+      }
+    },
+    "appointments": {
+      "title": "अपॉइंटमेंट्स",
+      "subtitle": "थेरेपी शेड्यूल और सत्रों का प्रबंधन करें",
+      "scheduleButton": "सत्र निर्धारित करें",
+      "emptyTitle": "अभी तक कोई अपॉइंटमेंट नहीं",
+      "emptySubtitle": "मरीजों द्वारा बुक किए गए अपॉइंटमेंट यहां दिखाई देंगे।",
+      "scheduleModal": {
+        "title": "अपॉइंटमेंट शेड्यूल करें",
+        "subtitle": "मरीज के लिए नया थेरेपी सत्र बुक करें",
+        "selectPatient": "मरीज / क्लाइंट चुनें",
+        "selectPatientPlaceholder": "एक मरीज चुनें...",
+        "noPatients": "प्रैक्टिस डायरेक्टरी में कोई मरीज नहीं मिला",
+        "date": "सत्र की तारीख",
+        "time": "प्रारंभ समय",
+        "duration": "अवधि",
+        "format": "सत्र का प्रारूप",
+        "video": "ऑनलाइन वीडियो",
+        "inPerson": "व्यक्तिगत (इन-पर्सन)",
+        "status": "प्रारंभिक स्थिति",
+        "confirmed": "पुष्टि की गई",
+        "pending": "पुष्टि लंबित",
+        "notes": "सत्र नोट्स / एजेंडा",
+        "notesPlaceholder": "उदा., प्रारंभिक मूल्यांकन, सीबीटी विचार समीक्षा...",
+        "submit": "सत्र निर्धारित करें",
+        "submitting": "निर्धारित हो रहा है...",
+        "success": "अपॉइंटमेंट सफलतापूर्वक निर्धारित किया गया!"
+      }
+    },
+    "tasks": {
+      "title": "कार्य (टास्क)",
+      "subtitle": "असाइन किए गए अभ्यास और चेक-इन कार्य",
+      "assignTaskButton": "कार्य सौंपें",
+      "emptyTitle": "कोई सक्रिय कार्य नहीं",
+      "emptySubtitle": "मरीजों को सौंपे गए अभ्यास और कार्य यहां दिखाई देंगे।",
+      "createModal": {
+        "title": "थेरेप्यूटिक कार्य सौंपें",
+        "subtitle": "मरीज के लिए व्यायाम या व्यवहार संबंधी कार्य बनाएं",
+        "selectPatient": "मरीज / क्लाइंट चुनें",
+        "selectPatientPlaceholder": "एक मरीज चुनें...",
+        "noPatients": "प्रैक्टिस डायरेक्टरी में कोई मरीज नहीं मिला",
+        "taskTitle": "कार्य शीर्षक",
+        "titlePlaceholder": "उदा., दैनिक विचार लॉग, 10 मिनट गहरी सांसें",
+        "instructions": "निर्देश / विवरण",
+        "instructionsPlaceholder": "इस कार्य को पूरा करने के लिए क्लाइंट के लिए विस्तृत मार्गदर्शन...",
+        "frequency": "आवृत्ति (फ्रीक्वेंसी)",
+        "deadline": "नियत तारीख / समय-सीमा",
+        "submit": "कार्य सौंपें",
+        "submitting": "सौंपा जा रहा है...",
+        "success": "कार्य सफलतापूर्वक सौंपा गया!"
+      }
+    },
+    "settings": {
+      "title": "सेटिंग्स",
+      "subtitle": "खाता प्राथमिकताएं और क्लिनिकल सुरक्षा",
+      "profileSection": "काउंसलर प्रोफाइल",
+      "profileSubtitle": "आपका क्लिनिकल नाम और व्यावसायिक संपर्क विवरण",
+      "securitySection": "सुरक्षा और पासवर्ड",
+      "securitySubtitle": "अपना खाता पासवर्ड और सुरक्षा क्रेडेंशियल अपडेट करें",
+      "languageSection": "भाषा और भाषा क्षेत्र",
+      "languageSubtitle": "पूरे एप्लिकेशन में अपनी पसंदीदा भाषा चुनें",
+      "languageHelp": "यह वरीयता सभी डैशबोर्ड नेविगेशन, मरीज रिकॉर्ड, सत्र और सेटिंग्स पर लागू होती है।",
+      "profileSaved": "प्रोफाइल परिवर्तन सफलतापूर्वक सहेजे गए!",
+      "passwordSaved": "पासवर्ड सफलतापूर्वक अपडेट किया गया!"
+    }
+  }
+}

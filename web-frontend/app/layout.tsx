@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans, Inter } from 'next/font/google'
+import { Plus_Jakarta_Sans, Inter, Noto_Sans_Devanagari } from 'next/font/google'
+import { cookies } from 'next/headers'
+import { LanguageProvider, Locale } from '@/context/LanguageContext'
 import './globals.css'
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -12,6 +14,13 @@ const jakarta = Plus_Jakarta_Sans({
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  display: 'swap',
+})
+
+const devanagari = Noto_Sans_Devanagari({
+  subsets: ['devanagari'],
+  variable: '--font-devanagari',
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 })
 
@@ -52,15 +61,21 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const cookieStore = await cookies()
+  const rawLocale = cookieStore.get('counsconnect_locale')?.value
+  const locale: Locale = (rawLocale === 'hi' || rawLocale === 'mr' || rawLocale === 'en') ? rawLocale : 'en'
+
   return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", jakarta.variable, inter.variable)}>
+    <html lang={locale} suppressHydrationWarning className={cn("font-sans", jakarta.variable, inter.variable, devanagari.variable)}>
       <body className={`${jakarta.className} antialiased selection:bg-[#588B8B]/20 selection:text-[#2D3A3A]`}>
-        {children}
+        <LanguageProvider initialLocale={locale}>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   )

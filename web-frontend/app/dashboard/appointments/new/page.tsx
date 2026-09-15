@@ -9,9 +9,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Video, MapPin, Calendar, Clock } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function NewAppointmentPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [clients, setClients] = useState<{ id: string; name: string }[]>([])
@@ -53,7 +55,7 @@ export default function NewAppointmentPage() {
     setError('')
 
     if (!form.clientId || !form.date || !form.time) {
-      setError('Please fill in all required fields.')
+      setError(t('dashboard.appointments.scheduleModal.selectPatientPlaceholder') || 'Please fill in all required fields.')
       setSubmitting(false)
       return
     }
@@ -100,8 +102,12 @@ export default function NewAppointmentPage() {
       <div className="bg-white rounded-xl border border-[#E2E0D6] shadow-2xs overflow-hidden">
         {/* Card Header */}
         <div className="px-6 py-5 border-b border-[#E2E0D6] bg-[#F6F5EE]/40">
-          <h2 className="text-sm font-bold text-[#2D3A3A]">Book New Appointment</h2>
-          <p className="text-xs text-[#5A6B6B] mt-0.5">Schedule a session with one of your clients</p>
+          <h2 className="text-sm font-bold text-[#2D3A3A]">
+            {t('dashboard.appointments.scheduleModal.title')}
+          </h2>
+          <p className="text-xs text-[#5A6B6B] mt-0.5">
+            {t('dashboard.appointments.scheduleModal.subtitle')}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
@@ -114,7 +120,7 @@ export default function NewAppointmentPage() {
           <div className="space-y-4">
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-[#2D3A3A]">
-                Select Client <span className="text-rose-500">*</span>
+                {t('dashboard.appointments.scheduleModal.selectPatient')} <span className="text-rose-500">*</span>
               </Label>
               <select
                 className="w-full border border-[#E2E0D6] rounded-lg px-3 py-2 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#588B8B] text-[#2D3A3A]"
@@ -122,7 +128,7 @@ export default function NewAppointmentPage() {
                 onChange={e => update('clientId', e.target.value)}
                 disabled={loadingClients}
               >
-                <option value="">{loadingClients ? 'Loading clients...' : 'Choose a client'}</option>
+                <option value="">{loadingClients ? t('common.loading') : (t('dashboard.appointments.scheduleModal.selectPatientPlaceholder') || 'Choose a client')}</option>
                 {clients.map(client => (
                   <option key={client.id} value={client.id}>{client.name}</option>
                 ))}
@@ -132,7 +138,7 @@ export default function NewAppointmentPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-[#2D3A3A] flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5" /> Date <span className="text-rose-500">*</span>
+                  <Calendar className="w-3.5 h-3.5" /> {t('dashboard.appointments.scheduleModal.date')} <span className="text-rose-500">*</span>
                 </Label>
                 <Input
                   type="date"
@@ -143,7 +149,7 @@ export default function NewAppointmentPage() {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-[#2D3A3A] flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5" /> Time <span className="text-rose-500">*</span>
+                  <Clock className="w-3.5 h-3.5" /> {t('dashboard.appointments.scheduleModal.time')} <span className="text-rose-500">*</span>
                 </Label>
                 <Input
                   type="time"
@@ -156,7 +162,7 @@ export default function NewAppointmentPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#2D3A3A]">Duration</Label>
+                <Label className="text-xs font-semibold text-[#2D3A3A]">{t('dashboard.appointments.scheduleModal.duration')}</Label>
                 <select
                   className="w-full border border-[#E2E0D6] rounded-lg px-3 py-2 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#588B8B] text-[#2D3A3A]"
                   value={form.duration}
@@ -170,7 +176,7 @@ export default function NewAppointmentPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[#2D3A3A]">Location Format</Label>
+                <Label className="text-xs font-semibold text-[#2D3A3A]">{t('dashboard.appointments.scheduleModal.format')}</Label>
                 <div className="flex gap-2">
                   <button
                     type="button"
@@ -181,7 +187,7 @@ export default function NewAppointmentPage() {
                         : 'bg-white text-[#5A6B6B] border-[#E2E0D6] hover:bg-[#F6F5EE]'
                     }`}
                   >
-                    <Video className="w-3.5 h-3.5" /> Video Call
+                    <Video className="w-3.5 h-3.5" /> {t('common.onlineVideo')}
                   </button>
                   <button
                     type="button"
@@ -192,20 +198,20 @@ export default function NewAppointmentPage() {
                         : 'bg-white text-[#5A6B6B] border-[#E2E0D6] hover:bg-[#F6F5EE]'
                     }`}
                   >
-                    <MapPin className="w-3.5 h-3.5" /> In-Person
+                    <MapPin className="w-3.5 h-3.5" /> {t('common.inPerson')}
                   </button>
                 </div>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-[#2D3A3A]">Notes (Optional)</Label>
+              <Label className="text-xs font-semibold text-[#2D3A3A]">{t('dashboard.appointments.scheduleModal.notes')}</Label>
               <Textarea
                 rows={3}
                 className="resize-none text-xs rounded-lg border-[#E2E0D6] bg-white text-[#2D3A3A] p-2.5"
                 value={form.notes}
                 onChange={e => update('notes', e.target.value)}
-                placeholder="Any special notes or preparation required for this session..."
+                placeholder={t('dashboard.appointments.scheduleModal.notesPlaceholder') || "Any special notes or preparation required for this session..."}
               />
             </div>
           </div>
@@ -214,9 +220,9 @@ export default function NewAppointmentPage() {
             <Button
               type="submit"
               disabled={submitting}
-              className="bg-[#588B8B] hover:bg-[#3D6363] text-white rounded-lg px-5 text-xs font-semibold"
+              className="bg-[#588B8B] hover:bg-[#3D6363] text-white rounded-lg px-5 text-xs font-semibold cursor-pointer"
             >
-              {submitting ? 'Booking...' : 'Book Appointment'}
+              {submitting ? t('dashboard.appointments.scheduleModal.submitting') : t('dashboard.appointments.scheduleModal.submit')}
             </Button>
           </div>
         </form>

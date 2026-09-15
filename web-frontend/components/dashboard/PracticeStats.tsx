@@ -1,6 +1,7 @@
 'use client'
 
 import { CalendarDays, Users, UserPlus, CheckSquare } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface PracticeStatsProps {
   todaySessionsCount: number
@@ -15,29 +16,31 @@ export default function PracticeStats({
   newClientsThisWeekCount,
   pendingTasksCount,
 }: PracticeStatsProps) {
+  const { t } = useLanguage()
+
   const stats = [
     {
-      label: "Today's Sessions",
+      label: t('dashboard.overview.stats.todaySessions'),
       value: todaySessionsCount,
-      subtext: "Scheduled today",
+      subtext: t('dashboard.overview.stats.todaySessionsSubtext'),
       icon: CalendarDays,
     },
     {
-      label: "Total Clients",
+      label: t('dashboard.overview.stats.totalClients'),
       value: totalClientsCount,
-      subtext: "Active caseload",
+      subtext: t('dashboard.overview.stats.totalClientsSubtext'),
       icon: Users,
     },
     {
-      label: "New This Week",
+      label: t('dashboard.overview.stats.newThisWeek'),
       value: newClientsThisWeekCount,
-      subtext: "Past 7 days",
+      subtext: t('dashboard.overview.stats.newThisWeekSubtext'),
       icon: UserPlus,
     },
     {
-      label: "Pending Tasks",
+      label: t('dashboard.overview.stats.pendingTasks'),
       value: pendingTasksCount,
-      subtext: "Client assignments",
+      subtext: t('dashboard.overview.stats.pendingTasksSubtext'),
       icon: CheckSquare,
     },
   ]

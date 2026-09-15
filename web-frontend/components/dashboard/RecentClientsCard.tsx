@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import type { Client } from '@/lib/types'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface RecentClientsCardProps {
   recentClients?: Client[] | null
@@ -14,6 +15,7 @@ const STATUS_STYLES: Record<string, string> = {
 }
 
 export default function RecentClientsCard({ recentClients }: RecentClientsCardProps) {
+  const { t } = useLanguage()
   const hasClients = recentClients && recentClients.length > 0
 
   return (
@@ -21,27 +23,29 @@ export default function RecentClientsCard({ recentClients }: RecentClientsCardPr
       {/* Header */}
       <div className="px-6 py-4 border-b border-[#E2E0D6] flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-bold text-[#2D3A3A]">Recent Clients</h2>
-          <p className="text-xs text-[#5A6B6B] mt-0.5">Caseload snapshot</p>
+          <h2 className="text-sm font-bold text-[#2D3A3A]">{t('dashboard.overview.recentClients.title')}</h2>
+          <p className="text-xs text-[#5A6B6B] mt-0.5">{t('dashboard.overview.recentClients.subtitle')}</p>
         </div>
 
         <Link
           href="/dashboard/clients"
           className="text-xs font-semibold text-[#588B8B] hover:text-[#3D6363] hover:underline"
         >
-          View all
+          {t('common.viewAll')}
         </Link>
       </div>
 
       {/* Content */}
       {!hasClients ? (
         <div className="py-10 px-6 text-center space-y-2">
-          <p className="text-xs text-[#5A6B6B]">No clients registered yet</p>
+          <p className="text-xs text-[#5A6B6B]">{t('dashboard.overview.recentClients.empty')}</p>
         </div>
       ) : (
         <div className="divide-y divide-[#E2E0D6]/60">
           {recentClients.slice(0, 5).map((client) => {
             const statusCls = STATUS_STYLES[client.status] || STATUS_STYLES.Active
+            const statusKey = client.status === 'Active' ? 'active' : client.status === 'Inactive' ? 'inactive' : 'onHold'
+            const statusLabel = t(`common.status.${statusKey}`) || client.status
 
             return (
               <Link
@@ -54,7 +58,7 @@ export default function RecentClientsCard({ recentClients }: RecentClientsCardPr
                     {client.name}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5 text-xs text-[#5A6B6B]">
-                    <span>{client.age} yrs</span>
+                    <span>{client.age} {t('common.yrs')}</span>
                     <span>•</span>
                     <span>{client.gender}</span>
                     {client.issues?.length > 0 && (
@@ -69,7 +73,7 @@ export default function RecentClientsCard({ recentClients }: RecentClientsCardPr
                 </div>
 
                 <span className={`text-xs px-2 py-0.5 rounded border font-medium shrink-0 ${statusCls}`}>
-                  {client.status}
+                  {statusLabel}
                 </span>
               </Link>
             )

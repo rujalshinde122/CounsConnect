@@ -3,8 +3,12 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { useLanguage } from '@/context/LanguageContext'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { ArrowLeft, CheckCircle2 } from 'lucide-react'
 
 export default function ForgotPasswordPage() {
+  const { t } = useLanguage()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
@@ -29,36 +33,48 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-[#F6F5EE] p-6 relative">
+      {/* Language Switcher Fixed at Top Right */}
+      <div className="absolute top-6 right-6 z-20">
+        <LanguageSwitcher variant="auth" />
+      </div>
+
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2.5">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-700 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold">C</span>
+            <div className="w-10 h-10 bg-[#588B8B] rounded-2xl flex items-center justify-center text-white font-extrabold text-base shadow-xs">
+              C
             </div>
-            <span className="font-bold text-gray-900 text-xl">CounsConnect</span>
+            <div className="text-left">
+              <span className="font-bold text-[#2D3A3A] text-lg block leading-tight">{t('common.appName')}</span>
+              <span className="text-[11px] text-[#5A6B6B] leading-tight">{t('common.practiceWorkspace')}</span>
+            </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+        <div className="bg-white rounded-3xl shadow-xs border border-[#E2E0D6] p-8 sm:p-10 space-y-6">
           {!sent ? (
             <>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Reset your password</h1>
-              <p className="text-gray-500 text-sm mb-8">
-                Enter your email address and we&apos;ll send you a reset link.
-              </p>
+              <div className="space-y-1.5">
+                <h1 className="text-2xl font-extrabold text-[#2D3A3A] tracking-tight">
+                  {t('auth.forgotPassword.title')}
+                </h1>
+                <p className="text-xs text-[#5A6B6B]">
+                  {t('auth.forgotPassword.subtitle')}
+                </p>
+              </div>
 
               {error && (
-                <div className="mb-5 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+                <div className="bg-[#FEE2E2] border border-[#EF4444]/30 text-[#991B1B] px-4 py-3 rounded-2xl text-xs font-medium">
                   {error}
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label htmlFor="reset-email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Email address
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="reset-email" className="block text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
+                    {t('auth.forgotPassword.emailLabel')}
                   </label>
                   <input
                     id="reset-email"
@@ -67,8 +83,8 @@ export default function ForgotPasswordPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent bg-gray-50 focus:bg-white transition-all"
+                    placeholder="counselor@practice.com"
+                    className="w-full px-4 py-2.5 border border-[#E2E0D6] rounded-2xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#588B8B] bg-[#F6F5EE]/60 focus:bg-white transition-colors"
                   />
                 </div>
 
@@ -76,29 +92,31 @@ export default function ForgotPasswordPage() {
                   type="submit"
                   id="send-reset-btn"
                   disabled={loading}
-                  className="w-full py-3 bg-violet-600 hover:bg-violet-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl text-sm transition-colors"
+                  className="w-full py-2.5 bg-[#588B8B] hover:bg-[#3D6363] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-full text-xs transition-colors shadow-xs"
                 >
-                  {loading ? 'Sending...' : 'Send reset link'}
+                  {loading ? t('auth.forgotPassword.sending') : t('auth.forgotPassword.submitButton')}
                 </button>
               </form>
             </>
           ) : (
-            <div className="text-center py-4">
-              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+            <div className="text-center py-4 space-y-3">
+              <div className="w-14 h-14 bg-[#ECFCCB] border border-[#84CC16]/30 rounded-2xl flex items-center justify-center mx-auto text-[#4D7C0F]">
+                <CheckCircle2 className="w-7 h-7" />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Check your inbox</h2>
-              <p className="text-gray-500 text-sm">
-                We sent a reset link to <strong>{email}</strong>. It expires in 1 hour.
+              <h2 className="text-xl font-bold text-[#2D3A3A]">{t('auth.forgotPassword.successMessage')}</h2>
+              <p className="text-xs text-[#5A6B6B]">
+                {email}
               </p>
             </div>
           )}
 
-          <div className="mt-6 text-center">
-            <Link href="/login" className="text-sm text-violet-600 hover:text-violet-700 font-medium">
-              ← Back to Sign In
+          <div className="pt-2 text-center">
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-1.5 text-xs text-[#588B8B] hover:text-[#3D6363] font-semibold hover:underline underline-offset-4"
+            >
+              <ArrowLeft className="w-3 h-3" />
+              {t('auth.forgotPassword.backToLogin')}
             </Link>
           </div>
         </div>
