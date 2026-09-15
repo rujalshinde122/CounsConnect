@@ -11,11 +11,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, CheckSquare, User, Calendar, AlertCircle } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 
-interface PatientProfile {
+interface ClientOption {
   id: string
   name: string | null
-  email: string
-  role: string
 }
 
 const FREQUENCIES = [
@@ -31,8 +29,9 @@ export default function NewTaskPage() {
   const { t } = useLanguage()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const [patients, setPatients] = useState<PatientProfile[]>([])
+  const [patients, setPatients] = useState<ClientOption[]>([])
   const [loadingPatients, setLoadingPatients] = useState(true)
+  const [sessions, setSessions] = useState<{ id: string, session_date: string, session_number: number | null }[]>([])
 
   const getTomorrowStr = () => {
     const d = new Date()
@@ -42,6 +41,7 @@ export default function NewTaskPage() {
 
   const [form, setForm] = useState({
     patientId: '',
+    sessionId: '',
     title: '',
     description: '',
     frequency: 'daily',
@@ -56,11 +56,14 @@ export default function NewTaskPage() {
       setLoadingPatients(true)
       const supabase = createClient()
       
-      // Query profiles strictly for role 'patient' so counselors are NEVER shown
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      // Query clients strictly for this counselor
       const { data, error } = await supabase
-        .from('profiles')
-        .select('id, name, email, role')
-        .eq('role', 'patient')
+        .from('clients')
+        .select('id, name')
+        .eq('counselor_id', user.id)
         .order('name')
 
       if (!error && data) {
@@ -74,6 +77,23 @@ export default function NewTaskPage() {
 
     fetchPatients()
   }, [])
+
+  useEffect(() => {
+    if (!form.patientId) {
+      setSessions([])
+      return
+    }
+    const fetchSessions = async () => {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('session_notes')
+        .select('id, session_date, session_number')
+        .eq('client_id', form.patientId)
+        .order('session_date', { ascending: true })
+      if (data) setSessions(data)
+    }
+    fetchSessions()
+  }, [form.patientId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,6 +123,7 @@ export default function NewTaskPage() {
     const { error: insertError } = await supabase.from('tasks').insert({
       counselor_id: user.id,
       patient_id: form.patientId,
+      session_id: form.sessionId || null,
       title: form.title.trim(),
       description: form.description.trim() || null,
       frequency: form.frequency,
@@ -176,16 +197,37 @@ export default function NewTaskPage() {
                 ) : (
                   patients.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name ? `${p.name} (${p.email})` : p.email}
+                      {p.name || 'Unnamed Client'}
                     </option>
                   ))
                 )}
               </select>
               {patients.length === 0 && !loadingPatients && (
                 <p className="text-[11px] text-amber-700 mt-1">
-                  No registered client accounts found. Clients must register or sign in via the mobile app.
+                  No clients found in your practice. Please add a client first.
                 </p>
               )}
+            </div>
+
+            {/* Link to Session */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-[#2D3A3A] flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-[#588B8B]" />
+                <span>Link to Session (Optional)</span>
+              </Label>
+              <select
+                className="w-full border border-[#E2E0D6] rounded-lg px-3 py-2 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#588B8B] text-[#2D3A3A] cursor-pointer"
+                value={form.sessionId}
+                onChange={(e) => update('sessionId', e.target.value)}
+                disabled={sessions.length === 0}
+              >
+                <option value="">No session linked</option>
+                {sessions.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    Session {s.session_number ? `#${s.session_number}` : ''} - {new Date(s.session_date).toLocaleDateString()}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Task Title */}
@@ -252,6 +294,7 @@ export default function NewTaskPage() {
               <Input
                 type="date"
                 value={form.deadline}
+                min={new Date().toISOString().split('T')[0]}
                 onChange={(e) => update('deadline', e.target.value)}
                 className="rounded-lg border-[#E2E0D6] bg-white text-xs sm:text-sm px-3.5 py-2"
               />

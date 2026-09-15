@@ -22,12 +22,15 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
   const [duration, setDuration] = useState('60')
   const [modality, setModality] = useState('In-Person')
   const [tagsInput, setTagsInput] = useState('')
+  const [progressRating, setProgressRating] = useState<string>('3')
+
   
   const [subjective, setSubjective] = useState('')
   const [objective, setObjective] = useState('')
   const [assessment, setAssessment] = useState('')
   const [plan, setPlan] = useState('')
   const [homework, setHomework] = useState('')
+  const [homeworkFrequency, setHomeworkFrequency] = useState('once')
   const [privateNotes, setPrivateNotes] = useState('')
 
   const handleSave = async () => {
@@ -40,7 +43,7 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
     const { count } = await supabase.from('session_notes').select('*', { count: 'exact', head: true }).eq('client_id', clientId)
     const nextSessionNumber = (count || 0) + 1
 
-    const { error } = await supabase.from('session_notes').insert({
+    const { data: sessionData, error } = await supabase.from('session_notes').insert({
       client_id: clientId,
       counselor_id: counselorId,
       session_number: nextSessionNumber,
@@ -53,14 +56,28 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
       plan,
       homework_assigned: homework,
       private_clinical_notes: privateNotes,
-      tags: tagsArray
-    })
+      tags: tagsArray,
+      progress_rating: parseInt(progressRating) || null
+    }).select('id').single()
     
+    // Auto-create task if homework is assigned
+    if (!error && sessionData?.id && homework.trim() !== '') {
+      await supabase.from('tasks').insert({
+        counselor_id: counselorId,
+        patient_id: clientId,
+        session_id: sessionData.id,
+        title: 'Session Homework',
+        description: homework.trim(),
+        frequency: homeworkFrequency,
+        status: 'pending'
+      })
+    }
+
     setSaving(false)
     if (!error) {
       setSaved(true)
       // Reset form
-      setSubjective(''); setObjective(''); setAssessment(''); setPlan(''); setHomework(''); setPrivateNotes(''); setTagsInput('');
+      setSubjective(''); setObjective(''); setAssessment(''); setPlan(''); setHomework(''); setHomeworkFrequency('once'); setPrivateNotes(''); setTagsInput(''); setProgressRating('3');
       setTimeout(() => setSaved(false), 3000)
       if (onSaved) onSaved()
     } else {
@@ -159,7 +176,21 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
 
         <div className="border-t border-[#E2E0D6] pt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-[#8A6A4B] uppercase tracking-wider">Homework Assigned</label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-[#8A6A4B] uppercase tracking-wider">Homework Assigned</label>
+              <Select value={homeworkFrequency} onValueChange={(val) => setHomeworkFrequency(val || 'once')}>
+                <SelectTrigger className="w-[110px] h-6 text-[10px] border-[#EBE3D5] bg-[#FFFBF0]/50 text-[#8A6A4B] shadow-none">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="biweekly">Bi-weekly</SelectItem>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="once">One-time</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <Textarea 
                 value={homework} onChange={e => setHomework(e.target.value)}
                 placeholder="Activities or reflections assigned to client..."
@@ -177,14 +208,31 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
         </div>
 
         <div className="border-t border-[#E2E0D6] pt-5 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div className="w-full sm:w-1/2 space-y-2">
-            <label className="text-xs font-bold text-[#2D3A3A] uppercase tracking-wider">Session Tags (comma separated)</label>
-            <input 
-              type="text" 
-              value={tagsInput} onChange={e => setTagsInput(e.target.value)}
-              placeholder="e.g. CBT, Anxiety, Trauma-focused"
-              className="w-full text-sm px-3 py-2 border border-[#E2E0D6] rounded-md focus:outline-none focus:ring-2 focus:ring-[#588B8B]"
-            />
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-[#2D3A3A] uppercase tracking-wider">Session Tags</label>
+              <input 
+                type="text" 
+                value={tagsInput} onChange={e => setTagsInput(e.target.value)}
+                placeholder="e.g. CBT, Anxiety"
+                className="w-full text-sm px-3 py-2 border border-[#E2E0D6] rounded-md focus:outline-none focus:ring-2 focus:ring-[#588B8B]"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-[#2D3A3A] uppercase tracking-wider">Clinical Progress</label>
+              <Select value={progressRating} onValueChange={(val) => setProgressRating(val || '3')}>
+                <SelectTrigger className="w-full text-sm border-[#E2E0D6] h-[38px]">
+                  <SelectValue placeholder="Select Rating" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 - Getting Worse</SelectItem>
+                  <SelectItem value="2">2 - No Improvement</SelectItem>
+                  <SelectItem value="3">3 - Slight Improvement</SelectItem>
+                  <SelectItem value="4">4 - Good Progress</SelectItem>
+                  <SelectItem value="5">5 - Significant Improvement</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             {saved && (

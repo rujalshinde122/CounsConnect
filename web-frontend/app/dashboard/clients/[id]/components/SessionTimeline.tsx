@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { SessionNote } from '@/lib/types'
+import { SessionNote, Task } from '@/lib/types'
 import { Loader2, Clock, Video, Users, ChevronDown, ChevronUp } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
@@ -12,6 +12,7 @@ interface Props {
 
 export default function SessionTimeline({ clientId }: Props) {
   const [sessions, setSessions] = useState<SessionNote[]>([])
+  const [sessionTasks, setSessionTasks] = useState<Record<string, Task[]>>({})
   const [loading, setLoading] = useState(true)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
@@ -26,6 +27,22 @@ export default function SessionTimeline({ clientId }: Props) {
         .order('session_date', { ascending: false })
       
       if (data) setSessions(data)
+
+      const { data: tasks } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('patient_id', clientId)
+        .not('session_id', 'is', null)
+
+      const tasksBySession: Record<string, Task[]> = {}
+      tasks?.forEach(t => {
+        if (t.session_id) {
+           if (!tasksBySession[t.session_id]) tasksBySession[t.session_id] = []
+           tasksBySession[t.session_id].push(t as unknown as Task)
+        }
+      })
+      setSessionTasks(tasksBySession)
+
       setLoading(false)
     }
     loadSessions()
@@ -92,7 +109,20 @@ export default function SessionTimeline({ clientId }: Props) {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="hidden sm:flex gap-1.5 flex-wrap justify-end">
+                    <div className="hidden sm:flex gap-1.5 flex-wrap justify-end items-center">
+                      {session.progress_rating && (
+                        <Badge variant="outline" className={`text-[10px] font-bold ${
+                          session.progress_rating >= 4 ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                          session.progress_rating <= 2 ? 'bg-rose-50 border-rose-200 text-rose-700' :
+                          'bg-amber-50 border-amber-200 text-amber-700'
+                        }`}>
+                          {session.progress_rating === 1 && 'Getting Worse'}
+                          {session.progress_rating === 2 && 'No Improvement'}
+                          {session.progress_rating === 3 && 'Slight Improvement'}
+                          {session.progress_rating === 4 && 'Good Progress'}
+                          {session.progress_rating === 5 && 'Significant Improvement'}
+                        </Badge>
+                      )}
                       {session.tags?.map(t => (
                         <Badge key={t} variant="outline" className="text-[10px] bg-[#F6F5EE] border-[#E2E0D6] font-medium text-[#5A6B6B]">{t}</Badge>
                       ))}
@@ -130,12 +160,35 @@ export default function SessionTimeline({ clientId }: Props) {
                       )}
                     </div>
                     
-                    {(session.homework_assigned || session.private_clinical_notes) && (
+                    {(session.homework_assigned || session.private_clinical_notes || (sessionTasks[session.id] && sessionTasks[session.id].length > 0)) && (
                       <div className="pt-4 border-t border-[#E2E0D6] space-y-4">
                         {session.homework_assigned && (
                           <div className="space-y-1.5">
                             <h5 className="text-[11px] font-bold uppercase tracking-wider text-[#8A6A4B]">Homework Assigned</h5>
                             <p className="text-sm text-[#2D3A3A] bg-[#FFFBF0] p-3 rounded-lg border border-[#EBE3D5] whitespace-pre-wrap">{session.homework_assigned}</p>
+                          </div>
+                        )}
+                        {sessionTasks[session.id] && sessionTasks[session.id].length > 0 && (
+                          <div className="space-y-1.5">
+                            <h5 className="text-[11px] font-bold uppercase tracking-wider text-[#588B8B]">Linked Tasks</h5>
+                            <div className="space-y-2">
+                              {sessionTasks[session.id].map(t => (
+                                <div key={t.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 bg-white border border-[#E2E0D6] rounded-md text-xs shadow-xs">
+                                  <div>
+                                    <div className="font-bold text-[#2D3A3A]">{t.title}</div>
+                                    {t.description && <div className="text-[10px] text-[#5A6B6B] mt-0.5 line-clamp-1">{t.description}</div>}
+                                  </div>
+                                  <div className="flex items-center gap-2 mt-2 sm:mt-0 shrink-0">
+                                    <span className="text-[#5A6B6B] capitalize text-[10px] bg-[#F6F5EE] px-1.5 py-0.5 rounded border border-[#E2E0D6] font-medium">{t.frequency}</span>
+                                    <span className={`px-2 py-0.5 rounded-full capitalize text-[10px] font-bold ${
+                                      t.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                    }`}>
+                                      {t.status}
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
                         {session.private_clinical_notes && (

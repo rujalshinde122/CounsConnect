@@ -53,8 +53,8 @@ export interface Appointment {
   notes: string | null
   created_at: string
   updated_at: string
-  // Joined fields
-  patient?: Pick<Profile, 'name' | 'email'>
+  // Joined
+  patient?: Pick<Client, 'name'>
   counselor?: Pick<Profile, 'name' | 'email'>
 }
 
@@ -71,10 +71,11 @@ export interface Task {
   deadline: string | null
   status: TaskStatus
   feedback: string | null
+  session_id: string | null
   created_at: string
   updated_at: string
   // Joined
-  patient?: Pick<Profile, 'name' | 'email'>
+  patient?: Pick<Client, 'name'>
 }
 
 export interface CheckIn {
@@ -132,6 +133,7 @@ export interface SessionNote {
   private_clinical_notes: string | null
   homework_assigned: string | null
   tags: string[] | null
+  progress_rating: number | null
   created_at: string
   updated_at: string
 }

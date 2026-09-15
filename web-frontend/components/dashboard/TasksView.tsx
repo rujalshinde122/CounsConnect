@@ -2,12 +2,14 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { CheckSquare, CheckCircle2, Clock, Plus, Search, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { CheckSquare, CheckCircle2, Clock, Plus, Search, X, Loader2 } from 'lucide-react'
 import type { Task } from '@/lib/types'
 import { useLanguage } from '@/context/LanguageContext'
 
 interface TasksViewProps {
-  tasks: (Task & { patient?: { name: string | null; email: string } })[] | null
+  tasks: (Task & { patient?: { name: string | null } })[] | null
 }
 
 const STATUS_CLASSES: Record<string, string> = {
@@ -27,8 +29,20 @@ const FREQ_KEYS: Record<string, string> = {
 
 export default function TasksView({ tasks }: TasksViewProps) {
   const { t, locale } = useLanguage()
+  const router = useRouter()
   const [filter, setFilter] = useState<string>('all')
   const [searchTerm, setSearchTerm] = useState('')
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
+
+  const toggleTaskStatus = async (task: Task) => {
+    if (updatingId) return
+    setUpdatingId(task.id)
+    const supabase = createClient()
+    const newStatus = task.status === 'completed' ? 'pending' : 'completed'
+    await supabase.from('tasks').update({ status: newStatus }).eq('id', task.id)
+    setUpdatingId(null)
+    router.refresh()
+  }
 
   const dateLocale = locale === 'hi' ? 'hi-IN' : locale === 'mr' ? 'mr-IN' : 'en-US'
 
@@ -170,13 +184,14 @@ export default function TasksView({ tasks }: TasksViewProps) {
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
                     <div
-                      className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-colors ${
+                      onClick={() => toggleTaskStatus(task)}
+                      className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-colors cursor-pointer ${
                         isCompleted
                           ? 'bg-[#588B8B] border-[#588B8B] text-white'
                           : 'border-[#E2E0D6] group-hover:border-[#588B8B]'
-                      }`}
+                      } ${updatingId === task.id ? 'opacity-50 pointer-events-none' : ''}`}
                     >
-                      {isCompleted && <CheckCircle2 className="w-3.5 h-3.5" />}
+                      {updatingId === task.id ? <Loader2 className="w-3.5 h-3.5 animate-spin text-[#588B8B]" /> : isCompleted && <CheckCircle2 className="w-3.5 h-3.5" />}
                     </div>
 
                     <div className="min-w-0">

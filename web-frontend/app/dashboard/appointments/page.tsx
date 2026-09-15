@@ -15,7 +15,7 @@ export default async function AppointmentsPage() {
     .from('appointments')
     .select(`
       *,
-      patient:profiles!appointments_patient_id_fkey(name, email)
+      patient:clients!appointments_patient_id_fkey(name)
     `)
     .eq('counselor_id', user.id)
     .order('start_time', { ascending: false })

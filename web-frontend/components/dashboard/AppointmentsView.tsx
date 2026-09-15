@@ -173,7 +173,7 @@ export default function AppointmentsView({ appointments }: AppointmentsViewProps
                 {appts.map((appt) => {
                   const statusCls = STATUS_CLASSES[appt.status] || STATUS_CLASSES.pending
                   const statusLabel = t(`common.status.${appt.status}`) || appt.status
-                  const clientName = appt.patient?.name || appt.patient?.email || t('common.patient')
+                  const clientName = appt.patient?.name || t('common.patient')
 
                   const timeFormatted = new Date(appt.start_time).toLocaleTimeString(dateLocale, {
                     hour: '2-digit', minute: '2-digit',
