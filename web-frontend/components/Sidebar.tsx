@@ -12,7 +12,6 @@ import {
   CheckSquare,
   Settings,
   LogOut,
-  Sparkles,
 } from 'lucide-react'
 
 const navItems = [

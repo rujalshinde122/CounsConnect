@@ -1,15 +1,14 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Video, MapPin, Calendar, Clock, CalendarDays, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { Video, MapPin, CalendarDays, Plus, Search, X } from 'lucide-react'
 import AppointmentActions from '@/app/dashboard/appointments/AppointmentActions'
-import CreateAppointmentModal, { type PatientOption } from '@/components/dashboard/CreateAppointmentModal'
 import { useLanguage } from '@/context/LanguageContext'
 import type { Appointment } from '@/lib/types'
 
 interface AppointmentsViewProps {
   appointments: Appointment[] | null
-  patients?: PatientOption[]
 }
 
 const STATUS_CLASSES: Record<string, string> = {
@@ -19,28 +18,12 @@ const STATUS_CLASSES: Record<string, string> = {
   cancelled: 'bg-rose-50/90 text-rose-800 border-rose-200/80',
 }
 
-export default function AppointmentsView({ appointments, patients }: AppointmentsViewProps) {
+export default function AppointmentsView({ appointments }: AppointmentsViewProps) {
   const { t, locale } = useLanguage()
   const [filter, setFilter] = useState<string>('all')
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const dateLocale = locale === 'hi' ? 'hi-IN' : locale === 'mr' ? 'mr-IN' : 'en-US'
-
-  const filteredAppointments = useMemo(() => {
-    const list = appointments ?? []
-    if (filter === 'all') return list
-    return list.filter((a) => a.status === filter)
-  }, [appointments, filter])
-
-  // Group by date
-  const grouped: Record<string, Appointment[]> = {}
-  for (const appt of filteredAppointments) {
-    const date = new Date(appt.start_time).toLocaleDateString(dateLocale, {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-    })
-    if (!grouped[date]) grouped[date] = []
-    grouped[date].push(appt)
-  }
 
   const counts = useMemo(() => {
     const list = appointments ?? []
@@ -51,6 +34,29 @@ export default function AppointmentsView({ appointments, patients }: Appointment
       completed: list.filter((a) => a.status === 'completed').length,
     }
   }, [appointments])
+
+  const filteredAppointments = useMemo(() => {
+    const list = appointments ?? []
+    return list.filter((a) => {
+      const matchesStatus = filter === 'all' || a.status === filter
+      if (!matchesStatus) return false
+      if (!searchTerm) return true
+      const term = searchTerm.toLowerCase()
+      const patientName = a.patient?.name?.toLowerCase() || ''
+      const notes = a.notes?.toLowerCase() || ''
+      return patientName.includes(term) || notes.includes(term)
+    })
+  }, [appointments, filter, searchTerm])
+
+  // Group by date
+  const grouped: Record<string, Appointment[]> = {}
+  for (const appt of filteredAppointments) {
+    const date = new Date(appt.start_time).toLocaleDateString(dateLocale, {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    })
+    if (!grouped[date]) grouped[date] = []
+    grouped[date].push(appt)
+  }
 
   return (
     <div className="max-w-[1400px] mx-auto space-y-6">
@@ -96,15 +102,37 @@ export default function AppointmentsView({ appointments, patients }: Appointment
             })}
           </div>
 
-          {/* Schedule Session Action Button */}
-          <button
-            type="button"
-            onClick={() => setIsCreateOpen(true)}
+          {/* Schedule Session Action Button (Navigates to dedicated page) */}
+          <Link
+            href="/dashboard/appointments/new"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#588B8B] to-[#457070] hover:from-[#457070] hover:to-[#365959] text-white text-xs font-bold shadow-xs hover:shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span>{t('dashboard.appointments.scheduleButton')}</span>
-          </button>
+          </Link>
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="bg-white rounded-2xl border border-[#E2E0D6] p-2.5 shadow-xs flex items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 text-[#889898] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={t('common.search')}
+            className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#F6F5EE]/70 hover:bg-[#F6F5EE] focus:bg-white text-xs sm:text-sm text-[#2D3A3A] placeholder-[#889898] border border-transparent focus:border-[#588B8B] focus:outline-none transition-all"
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={() => setSearchTerm('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#889898] hover:text-[#2D3A3A] p-0.5 rounded-full"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -121,14 +149,13 @@ export default function AppointmentsView({ appointments, patients }: Appointment
             </p>
           </div>
           <div>
-            <button
-              type="button"
-              onClick={() => setIsCreateOpen(true)}
+            <Link
+              href="/dashboard/appointments/new"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#588B8B] hover:bg-[#457070] text-white text-xs font-bold shadow-2xs hover:shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>{t('dashboard.appointments.scheduleButton')}</span>
-            </button>
+            </Link>
           </div>
         </div>
       ) : (
@@ -145,43 +172,38 @@ export default function AppointmentsView({ appointments, patients }: Appointment
                 {appts.map((appt) => {
                   const statusCls = STATUS_CLASSES[appt.status] || STATUS_CLASSES.pending
                   const statusLabel = t(`common.status.${appt.status}`) || appt.status
-                  const patientName = appt.patient?.name || `${t('common.patient')} ${t('common.status.scheduled')}`
-                  const initials = patientName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
+                  const clientName = appt.patient?.name || appt.patient?.email || t('common.patient')
+
+                  const timeFormatted = new Date(appt.start_time).toLocaleTimeString(dateLocale, {
+                    hour: '2-digit', minute: '2-digit',
+                  })
 
                   return (
                     <div
                       key={appt.id}
-                      className="px-6 py-4 flex items-center justify-between gap-4 hover:bg-[#F6F5EE]/40 transition-all group"
+                      className="px-6 py-4 flex items-center justify-between gap-4 hover:bg-[#F6F5EE]/40 transition-colors"
                     >
                       <div className="flex items-center gap-4 min-w-0">
-                        {/* Time Chip */}
-                        <div className="flex flex-col items-center justify-center w-16 px-2 py-1 rounded-xl bg-[#F6F5EE] border border-[#E2E0D6]/70 shrink-0">
-                          <span className="font-mono text-xs font-bold text-[#2D3A3A]">
-                            {new Date(appt.start_time).toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        </div>
-
-                        {/* Patient Initials Avatar */}
-                        <div className="w-8 h-8 rounded-full bg-[#588B8B]/10 text-[#588B8B] flex items-center justify-center text-xs font-bold shrink-0 border border-[#588B8B]/20">
-                          {initials}
-                        </div>
+                        <span className="font-mono text-xs font-bold text-[#2D3A3A] bg-[#F6F5EE] px-2.5 py-1 rounded-lg border border-[#E2E0D6] w-20 text-center shrink-0">
+                          {timeFormatted}
+                        </span>
 
                         <div className="min-w-0">
-                          <p className="font-bold text-[#2D3A3A] text-xs leading-tight group-hover:text-[#588B8B] transition-colors">
-                            {patientName}
+                          <p className="font-bold text-[#2D3A3A] text-xs leading-tight truncate">
+                            {clientName}
                           </p>
-                          <div className="flex items-center gap-2 mt-0.5 text-xs text-[#5A6B6B]">
+                          <div className="flex items-center gap-2.5 mt-1 text-xs text-[#5A6B6B]">
                             {appt.location === 'video' ? (
-                              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#588B8B]">
-                                <Video className="w-3 h-3 shrink-0" /> {t('common.onlineVideo')}
+                              <span className="inline-flex items-center gap-1 text-[#588B8B] font-medium">
+                                <Video className="w-3 h-3" /> {t('common.onlineVideo')}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#D97706]">
-                                <MapPin className="w-3 h-3 shrink-0" /> {t('common.inPerson')}
+                              <span className="inline-flex items-center gap-1 text-[#D84C20] font-medium">
+                                <MapPin className="w-3 h-3" /> {t('common.inPerson')}
                               </span>
                             )}
                             {appt.notes && (
-                              <span className="text-[#889898] text-[11px] truncate max-w-[240px]">
+                              <span className="text-[#889898] truncate max-w-[280px] hidden sm:inline">
                                 • {appt.notes}
                               </span>
                             )}
@@ -216,13 +238,6 @@ export default function AppointmentsView({ appointments, patients }: Appointment
           </div>
         ))
       )}
-
-      {/* Create Appointment Modal */}
-      <CreateAppointmentModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-        patients={patients}
-      />
     </div>
   )
 }

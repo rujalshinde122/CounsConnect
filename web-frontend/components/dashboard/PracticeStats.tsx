@@ -1,6 +1,6 @@
 'use client'
 
-import { CalendarDays, Users, UserPlus, CheckSquare, TrendingUp } from 'lucide-react'
+import { CalendarDays, Users, UserPlus, CheckSquare } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 
 interface PracticeStatsProps {

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
+import type { Client } from '@/lib/types'
 import ClientsView from '@/components/dashboard/ClientsView'
 
 export const metadata: Metadata = { title: 'Clients | CounsConnect' }
@@ -16,5 +17,5 @@ export default async function ClientsPage() {
     .eq('counselor_id', user.id)
     .order('created_at', { ascending: false })
 
-  return <ClientsView clients={clients as any} />
+  return <ClientsView clients={clients as unknown as Pick<Client, 'id' | 'name' | 'age' | 'gender' | 'issues' | 'status' | 'created_at'>[]} />
 }

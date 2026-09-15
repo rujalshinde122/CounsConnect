@@ -8,9 +8,13 @@ export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
   if (process.env.NEXT_PUBLIC_MOCK_MODE === 'true') return supabaseResponse;
 
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return supabaseResponse
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
@@ -56,7 +60,7 @@ export async function proxy(request: NextRequest) {
   return supabaseResponse
 }
 
-export const proxyConfig = {
+export const config = {
   matcher: [
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],

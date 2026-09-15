@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Clock, Sun, Moon, Sparkles, CheckCircle2 } from 'lucide-react'
+import { Clock, Sun, Moon, CheckCircle2 } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']

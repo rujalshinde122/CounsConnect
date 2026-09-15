@@ -72,7 +72,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning className={cn("font-sans", jakarta.variable, inter.variable, devanagari.variable)}>
-      <body className={`${jakarta.className} ${devanagari.className} antialiased selection:bg-[#588B8B]/20 selection:text-[#2D3A3A]`}>
+      <body className={`${jakarta.className} antialiased selection:bg-[#588B8B]/20 selection:text-[#2D3A3A]`}>
         <LanguageProvider initialLocale={locale}>
           {children}
         </LanguageProvider>

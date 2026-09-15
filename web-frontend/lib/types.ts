@@ -103,3 +103,35 @@ export interface Notification {
   type: string | null
   created_at: string
 }
+
+export interface ClientClinicalHistory {
+  client_id: string
+  chief_complaints: string | null
+  psychiatric_history: string | null
+  medical_history: string | null
+  family_history: string | null
+  triggers: string | null
+  current_medications: string | null
+  risk_level: 'Low' | 'Medium' | 'High' | 'Crisis' | null
+  allergies_or_precautions: string | null
+  updated_at: string
+}
+
+export interface SessionNote {
+  id: string
+  client_id: string
+  counselor_id: string
+  session_number: number | null
+  session_date: string
+  duration_minutes: number
+  modality: 'In-Person' | 'Virtual' | null
+  subjective: string | null
+  objective: string | null
+  assessment: string | null
+  plan: string | null
+  private_clinical_notes: string | null
+  homework_assigned: string | null
+  tags: string[] | null
+  created_at: string
+  updated_at: string
+}

@@ -85,3 +85,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+
+# Antigravity Local Customizations & MCP Plugins
+/.agents/
+AGENTS.md
+skills-lock.json
+

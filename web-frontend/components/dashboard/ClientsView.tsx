@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { UserPlus, Search, Users, X, ChevronRight, Filter } from 'lucide-react'
+import { UserPlus, Search, Users, X, ChevronRight } from 'lucide-react'
 import type { Client } from '@/lib/types'
 import { useLanguage } from '@/context/LanguageContext'
 

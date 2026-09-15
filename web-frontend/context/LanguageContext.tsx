@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo } from 'react';
 import en from '@/messages/en.json';
 import hi from '@/messages/hi.json';
 import mr from '@/messages/mr.json';
@@ -19,7 +19,7 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
   { code: 'mr', label: 'Marathi', native: 'मराठी' },
 ];
 
-const dictionaries: Record<Locale, Record<string, any>> = {
+const dictionaries: Record<Locale, Record<string, unknown>> = {
   en,
   hi,
   mr,
@@ -34,13 +34,13 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-function getNestedTranslation(obj: any, path: string): string | undefined {
-  if (!obj) return undefined;
+function getNestedTranslation(obj: unknown, path: string): string | undefined {
+  if (!obj || typeof obj !== 'object') return undefined;
   const keys = path.split('.');
-  let current: any = obj;
+  let current: unknown = obj;
   for (const key of keys) {
     if (current && typeof current === 'object' && key in current) {
-      current = current[key];
+      current = (current as Record<string, unknown>)[key];
     } else {
       return undefined;
     }
@@ -54,21 +54,19 @@ interface LanguageProviderProps {
 }
 
 export function LanguageProvider({ children, initialLocale = 'en' }: LanguageProviderProps) {
-  const [locale, setLocaleState] = useState<Locale>(initialLocale);
-
-  // Sync with localStorage on client mount if available
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('counsconnect_locale') as Locale | null;
-      if (stored && (stored === 'en' || stored === 'hi' || stored === 'mr')) {
-        if (stored !== locale) {
-          setLocaleState(stored);
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('counsconnect_locale') as Locale | null;
+        if (stored && (stored === 'en' || stored === 'hi' || stored === 'mr')) {
+          return stored;
         }
+      } catch {
+        // Ignore localStorage read errors
       }
-    } catch {
-      // Ignore localStorage read errors in restricted contexts
     }
-  }, []);
+    return initialLocale;
+  });
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
@@ -85,34 +83,44 @@ export function LanguageProvider({ children, initialLocale = 'en' }: LanguagePro
 
   const t = useMemo(() => {
     return (key: string, params?: Record<string, string | number>): string => {
-      // Try current locale
-      let text = getNestedTranslation(dictionaries[locale], key);
-      // Fallback to English
-      if (text === undefined && locale !== 'en') {
+      const activeDict = dictionaries[locale] || dictionaries.en;
+      let text = getNestedTranslation(activeDict, key);
+
+      // Fallback to English if translation is missing
+      if (!text && locale !== 'en') {
         text = getNestedTranslation(dictionaries.en, key);
       }
-      // If still not found, return key
-      if (text === undefined) {
+
+      // Final fallback to key itself
+      if (!text) {
         return key;
       }
-      // Interpolate parameters {param}
+
+      // Interpolate parameters like {count}, {name}
       if (params) {
-        Object.entries(params).forEach(([k, v]) => {
-          text = text?.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+        Object.entries(params).forEach(([paramKey, paramValue]) => {
+          text = text!.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), String(paramValue));
         });
       }
+
       return text;
     };
   }, [locale]);
 
-  return (
-    <LanguageContext.Provider value={{ locale, setLocale, languages: SUPPORTED_LANGUAGES, t }}>
-      {children}
-    </LanguageContext.Provider>
+  const value = useMemo(
+    () => ({
+      locale,
+      setLocale,
+      languages: SUPPORTED_LANGUAGES,
+      t,
+    }),
+    [locale, t]
   );
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
-export function useLanguage() {
+export function useLanguage(): LanguageContextType {
   const context = useContext(LanguageContext);
   if (!context) {
     throw new Error('useLanguage must be used within a LanguageProvider');

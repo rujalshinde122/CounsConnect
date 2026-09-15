@@ -1,15 +1,13 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { CheckSquare, CheckCircle2, Clock, AlertCircle, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { CheckSquare, CheckCircle2, Clock, Plus, Search, X } from 'lucide-react'
 import type { Task } from '@/lib/types'
 import { useLanguage } from '@/context/LanguageContext'
-import CreateTaskModal from '@/components/dashboard/CreateTaskModal'
-import type { PatientOption } from '@/components/dashboard/CreateAppointmentModal'
 
 interface TasksViewProps {
   tasks: (Task & { patient?: { name: string | null; email: string } })[] | null
-  patients?: PatientOption[]
 }
 
 const STATUS_CLASSES: Record<string, string> = {
@@ -27,10 +25,10 @@ const FREQ_KEYS: Record<string, string> = {
   once: 'One-time',
 }
 
-export default function TasksView({ tasks, patients }: TasksViewProps) {
+export default function TasksView({ tasks }: TasksViewProps) {
   const { t, locale } = useLanguage()
   const [filter, setFilter] = useState<string>('all')
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const dateLocale = locale === 'hi' ? 'hi-IN' : locale === 'mr' ? 'mr-IN' : 'en-US'
 
@@ -46,9 +44,17 @@ export default function TasksView({ tasks, patients }: TasksViewProps) {
 
   const filteredTasks = useMemo(() => {
     const list = tasks ?? []
-    if (filter === 'all') return list
-    return list.filter((task) => task.status === filter)
-  }, [tasks, filter])
+    return list.filter((task) => {
+      const matchesFilter = filter === 'all' || task.status === filter
+      if (!matchesFilter) return false
+      if (!searchTerm) return true
+      const term = searchTerm.toLowerCase()
+      const title = task.title.toLowerCase()
+      const desc = task.description?.toLowerCase() || ''
+      const patient = task.patient?.name?.toLowerCase() || ''
+      return title.includes(term) || desc.includes(term) || patient.includes(term)
+    })
+  }, [tasks, filter, searchTerm])
 
   return (
     <div className="max-w-[1400px] mx-auto space-y-6">
@@ -93,15 +99,37 @@ export default function TasksView({ tasks, patients }: TasksViewProps) {
             })}
           </div>
 
-          {/* Assign Task Button */}
-          <button
-            type="button"
-            onClick={() => setIsCreateOpen(true)}
+          {/* Assign Task Action Button (Navigates to dedicated page) */}
+          <Link
+            href="/dashboard/tasks/new"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#588B8B] to-[#457070] hover:from-[#457070] hover:to-[#365959] text-white text-xs font-bold shadow-xs hover:shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span>{t('dashboard.tasks.assignTaskButton')}</span>
-          </button>
+          </Link>
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="bg-white rounded-2xl border border-[#E2E0D6] p-2.5 shadow-xs flex items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 text-[#889898] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={t('common.search')}
+            className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#F6F5EE]/70 hover:bg-[#F6F5EE] focus:bg-white text-xs sm:text-sm text-[#2D3A3A] placeholder-[#889898] border border-transparent focus:border-[#588B8B] focus:outline-none transition-all"
+          />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={() => setSearchTerm('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#889898] hover:text-[#2D3A3A] p-0.5 rounded-full"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -117,14 +145,13 @@ export default function TasksView({ tasks, patients }: TasksViewProps) {
             </p>
           </div>
           <div>
-            <button
-              type="button"
-              onClick={() => setIsCreateOpen(true)}
+            <Link
+              href="/dashboard/tasks/new"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#588B8B] hover:bg-[#457070] text-white text-xs font-bold shadow-2xs hover:shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>{t('dashboard.tasks.assignTaskButton')}</span>
-            </button>
+            </Link>
           </div>
         </div>
       ) : (
@@ -166,7 +193,7 @@ export default function TasksView({ tasks, patients }: TasksViewProps) {
                         )}
                         {task.frequency && (
                           <span className="px-2 py-0.2 rounded-md bg-[#F6F5EE] border border-[#E2E0D6] text-[11px] font-medium text-[#5A6B6B]">
-                            {FREQ_KEYS[task.frequency] || task.frequency}
+                            {t(`common.frequency.${task.frequency}`) || FREQ_KEYS[task.frequency] || task.frequency}
                           </span>
                         )}
                         {task.deadline && (
@@ -195,13 +222,6 @@ export default function TasksView({ tasks, patients }: TasksViewProps) {
           </div>
         </div>
       )}
-
-      {/* Create Task Modal */}
-      <CreateTaskModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-        patients={patients}
-      />
     </div>
   )
 }

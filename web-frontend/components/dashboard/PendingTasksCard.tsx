@@ -1,21 +1,16 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { CheckSquare, CheckCircle2, Clock, Plus } from 'lucide-react'
 import type { Task } from '@/lib/types'
 import { useLanguage } from '@/context/LanguageContext'
-import CreateTaskModal from '@/components/dashboard/CreateTaskModal'
-import type { PatientOption } from '@/components/dashboard/CreateAppointmentModal'
 
 interface PendingTasksCardProps {
   pendingTasks?: Task[] | null
-  patients?: PatientOption[]
 }
 
-export default function PendingTasksCard({ pendingTasks, patients }: PendingTasksCardProps) {
+export default function PendingTasksCard({ pendingTasks }: PendingTasksCardProps) {
   const { t, locale } = useLanguage()
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
   const hasTasks = pendingTasks && pendingTasks.length > 0
 
   return (
@@ -37,14 +32,13 @@ export default function PendingTasksCard({ pendingTasks, patients }: PendingTask
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setIsCreateOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#588B8B] hover:bg-[#457070] text-white text-xs font-bold shadow-2xs hover:shadow-xs transition-all cursor-pointer"
+          <Link
+            href="/dashboard/tasks/new"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#588B8B] hover:bg-[#457070] text-white text-xs font-bold shadow-2xs hover:shadow-xs transition-all"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>{t('dashboard.tasks.assignTaskButton')}</span>
-          </button>
+          </Link>
 
           <Link
             href="/dashboard/tasks"
@@ -66,36 +60,35 @@ export default function PendingTasksCard({ pendingTasks, patients }: PendingTask
               <p className="text-xs font-bold text-[#2D3A3A]">{t('dashboard.overview.pendingTasks.empty')}</p>
               <p className="text-[11px] text-[#889898] mt-0.5">Assign therapeutic exercises or homework to patients</p>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsCreateOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#588B8B] hover:bg-[#457070] text-white text-xs font-bold shadow-2xs transition-all cursor-pointer"
+            <Link
+              href="/dashboard/tasks/new"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#588B8B] hover:bg-[#457070] text-white text-xs font-bold shadow-2xs transition-all"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>{t('dashboard.tasks.assignTaskButton')}</span>
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="divide-y divide-[#E2E0D6]/60">
             {pendingTasks.map((task) => {
-              const dateLocale = locale === 'hi' ? 'hi-IN' : locale === 'mr' ? 'mr-IN' : 'en-US'
-              const dueDate = task.deadline ? new Date(task.deadline).toLocaleDateString(dateLocale) : ''
+              const dueDate = task.deadline
+                ? new Date(task.deadline).toLocaleDateString(locale === 'hi' ? 'hi-IN' : locale === 'mr' ? 'mr-IN' : 'en-US')
+                : null
 
               return (
                 <div
                   key={task.id}
-                  className="px-6 py-3.5 flex items-center justify-between gap-4 hover:bg-[#F6F5EE]/40 transition-colors group"
+                  className="px-6 py-3.5 flex items-center justify-between gap-4 hover:bg-[#F6F5EE]/40 transition-colors"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-4 h-4 rounded-md border-2 border-[#E2E0D6] group-hover:border-[#588B8B] transition-colors shrink-0 flex items-center justify-center" />
-
+                    <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#2D3A3A] group-hover:text-[#588B8B] transition-colors truncate">
+                      <p className="text-xs font-bold text-[#2D3A3A] truncate leading-tight">
                         {task.title}
                       </p>
                       {task.patient?.name && (
                         <p className="text-[11px] text-[#5A6B6B] mt-0.5 truncate">
-                          {t('common.patient')}: <span className="font-semibold">{task.patient.name}</span>
+                          {t('common.patient')}: {task.patient.name}
                         </p>
                       )}
                     </div>
@@ -113,13 +106,6 @@ export default function PendingTasksCard({ pendingTasks, patients }: PendingTask
           </div>
         )}
       </div>
-
-      {/* Assign Task Modal */}
-      <CreateTaskModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
-        patients={patients}
-      />
     </div>
   )
 }

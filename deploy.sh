@@ -15,9 +15,17 @@ cd "$REPO_DIR/web-frontend"
 
 # 1. Pull latest changes from GitHub
 echo "📥 Pulling latest code from origin main..."
+cd "$REPO_DIR"
 git pull origin main
 
-# 2. Build the optimized Next.js Docker image
+# 2. Run any pending database migrations
+echo "🗄️ Running database migrations..."
+chmod +x "$REPO_DIR/scripts/migrate.sh"
+"$REPO_DIR/scripts/migrate.sh"
+
+cd "$REPO_DIR/web-frontend"
+
+# 3. Build the optimized Next.js Docker image
 # (Docker caching will make this take only ~15-25 seconds if package.json hasn't changed)
 echo "🔨 Building Docker container..."
 docker build -t counsconnect-web .
