@@ -132,6 +132,7 @@ export interface SessionNote {
   private_clinical_notes: string | null
   homework_assigned: string | null
   tags: string[] | null
+  progress_rating: number | null
   created_at: string
   updated_at: string
 }

@@ -22,6 +22,8 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
   const [duration, setDuration] = useState('60')
   const [modality, setModality] = useState('In-Person')
   const [tagsInput, setTagsInput] = useState('')
+  const [progressRating, setProgressRating] = useState<string>('3')
+
   
   const [subjective, setSubjective] = useState('')
   const [objective, setObjective] = useState('')
@@ -53,14 +55,15 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
       plan,
       homework_assigned: homework,
       private_clinical_notes: privateNotes,
-      tags: tagsArray
+      tags: tagsArray,
+      progress_rating: parseInt(progressRating) || null
     })
     
     setSaving(false)
     if (!error) {
       setSaved(true)
       // Reset form
-      setSubjective(''); setObjective(''); setAssessment(''); setPlan(''); setHomework(''); setPrivateNotes(''); setTagsInput('');
+      setSubjective(''); setObjective(''); setAssessment(''); setPlan(''); setHomework(''); setPrivateNotes(''); setTagsInput(''); setProgressRating('3');
       setTimeout(() => setSaved(false), 3000)
       if (onSaved) onSaved()
     } else {
@@ -177,14 +180,31 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
         </div>
 
         <div className="border-t border-[#E2E0D6] pt-5 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div className="w-full sm:w-1/2 space-y-2">
-            <label className="text-xs font-bold text-[#2D3A3A] uppercase tracking-wider">Session Tags (comma separated)</label>
-            <input 
-              type="text" 
-              value={tagsInput} onChange={e => setTagsInput(e.target.value)}
-              placeholder="e.g. CBT, Anxiety, Trauma-focused"
-              className="w-full text-sm px-3 py-2 border border-[#E2E0D6] rounded-md focus:outline-none focus:ring-2 focus:ring-[#588B8B]"
-            />
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-[#2D3A3A] uppercase tracking-wider">Session Tags</label>
+              <input 
+                type="text" 
+                value={tagsInput} onChange={e => setTagsInput(e.target.value)}
+                placeholder="e.g. CBT, Anxiety"
+                className="w-full text-sm px-3 py-2 border border-[#E2E0D6] rounded-md focus:outline-none focus:ring-2 focus:ring-[#588B8B]"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-[#2D3A3A] uppercase tracking-wider">Clinical Progress</label>
+              <Select value={progressRating} onValueChange={setProgressRating}>
+                <SelectTrigger className="w-full text-sm border-[#E2E0D6] h-[38px]">
+                  <SelectValue placeholder="Select Rating" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 - Getting Worse</SelectItem>
+                  <SelectItem value="2">2 - No Improvement</SelectItem>
+                  <SelectItem value="3">3 - Slight Improvement</SelectItem>
+                  <SelectItem value="4">4 - Good Progress</SelectItem>
+                  <SelectItem value="5">5 - Significant Improvement</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             {saved && (

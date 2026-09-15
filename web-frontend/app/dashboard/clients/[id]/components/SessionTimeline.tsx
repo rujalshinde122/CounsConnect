@@ -92,7 +92,20 @@ export default function SessionTimeline({ clientId }: Props) {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="hidden sm:flex gap-1.5 flex-wrap justify-end">
+                    <div className="hidden sm:flex gap-1.5 flex-wrap justify-end items-center">
+                      {session.progress_rating && (
+                        <Badge variant="outline" className={`text-[10px] font-bold ${
+                          session.progress_rating >= 4 ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                          session.progress_rating <= 2 ? 'bg-rose-50 border-rose-200 text-rose-700' :
+                          'bg-amber-50 border-amber-200 text-amber-700'
+                        }`}>
+                          {session.progress_rating === 1 && 'Getting Worse'}
+                          {session.progress_rating === 2 && 'No Improvement'}
+                          {session.progress_rating === 3 && 'Slight Improvement'}
+                          {session.progress_rating === 4 && 'Good Progress'}
+                          {session.progress_rating === 5 && 'Significant Improvement'}
+                        </Badge>
+                      )}
                       {session.tags?.map(t => (
                         <Badge key={t} variant="outline" className="text-[10px] bg-[#F6F5EE] border-[#E2E0D6] font-medium text-[#5A6B6B]">{t}</Badge>
                       ))}
