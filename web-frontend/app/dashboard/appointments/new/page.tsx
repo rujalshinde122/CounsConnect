@@ -68,6 +68,28 @@ export default function NewAppointmentPage() {
     const startDateTime = new Date(`${form.date}T${form.time}`)
     const endDateTime = new Date(startDateTime.getTime() + parseInt(form.duration) * 60000)
 
+    // Check if appointment is in the past
+    if (startDateTime < new Date()) {
+      setError('Cannot schedule an appointment in the past.')
+      setSubmitting(false)
+      return
+    }
+
+    // Check for overlaps
+    const { data: overlapping } = await supabase
+      .from('appointments')
+      .select('id')
+      .eq('counselor_id', user.id)
+      .not('status', 'eq', 'cancelled')
+      .lt('start_time', endDateTime.toISOString())
+      .gt('end_time', startDateTime.toISOString())
+
+    if (overlapping && overlapping.length > 0) {
+      setError('This session is already booked. Please check for open slots.')
+      setSubmitting(false)
+      return
+    }
+
     const { error: insertError } = await supabase.from('appointments').insert({
       counselor_id: user.id,
       patient_id: form.clientId,
@@ -143,6 +165,7 @@ export default function NewAppointmentPage() {
                 <Input
                   type="date"
                   value={form.date}
+                  min={new Date().toISOString().split('T')[0]}
                   onChange={e => update('date', e.target.value)}
                   className="rounded-lg border-[#E2E0D6] bg-white text-xs sm:text-sm px-3.5 py-2"
                 />

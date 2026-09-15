@@ -53,8 +53,8 @@ export interface Appointment {
   notes: string | null
   created_at: string
   updated_at: string
-  // Joined fields
-  patient?: Pick<Profile, 'name' | 'email'>
+  // Joined
+  patient?: Pick<Client, 'name'>
   counselor?: Pick<Profile, 'name' | 'email'>
 }
 
