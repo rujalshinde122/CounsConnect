@@ -30,16 +30,20 @@ export default async function DashboardPage() {
     { count: totalClients },
     { count: newClients },
     { data: pendingTasks },
+    { count: totalPendingTasksCount },
     { data: recentClients },
     { data: profile },
   ] = await Promise.all([
-    supabase.from('appointments').select('*').eq('counselor_id', user.id)
+    supabase.from('appointments').select('*, patient:clients!appointments_patient_id_fkey(name)')
+      .eq('counselor_id', user.id)
       .gte('start_time', todayStart).lte('start_time', todayEnd).order('start_time'),
     supabase.from('clients').select('*', { count: 'exact', head: true }).eq('counselor_id', user.id),
     supabase.from('clients').select('*', { count: 'exact', head: true })
       .eq('counselor_id', user.id).gte('created_at', weekAgo),
-    supabase.from('tasks').select('id, title, deadline, status, patient:profiles!tasks_patient_id_fkey(name, email)')
+    supabase.from('tasks').select('id, title, deadline, status, patient:clients!tasks_patient_id_fkey(name)')
       .eq('counselor_id', user.id).eq('status', 'pending').limit(5),
+    supabase.from('tasks').select('*', { count: 'exact', head: true })
+      .eq('counselor_id', user.id).eq('status', 'pending'),
     supabase.from('clients').select('id, name, age, gender, issues, status, created_at')
       .eq('counselor_id', user.id).order('created_at', { ascending: false }).limit(5),
     supabase.from('profiles').select('name, role').eq('id', user.id).single(),
@@ -58,7 +62,7 @@ export default async function DashboardPage() {
         todaySessionsCount={todayAppts?.length ?? 0}
         totalClientsCount={totalClients ?? 0}
         newClientsThisWeekCount={newClients ?? 0}
-        pendingTasksCount={pendingTasks?.length ?? 0}
+        pendingTasksCount={totalPendingTasksCount ?? 0}
       />
 
       {/* Main Row: Today's Schedule */}

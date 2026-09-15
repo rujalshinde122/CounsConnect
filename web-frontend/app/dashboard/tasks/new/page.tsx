@@ -89,7 +89,7 @@ export default function NewTaskPage() {
         .from('session_notes')
         .select('id, session_date, session_number')
         .eq('client_id', form.patientId)
-        .order('session_date', { ascending: false })
+        .order('session_date', { ascending: true })
       if (data) setSessions(data)
     }
     fetchSessions()
