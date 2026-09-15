@@ -54,8 +54,8 @@ secrets.json
 config.local.js
 
 # Local Documentation, Architecture Notes & Design Assets
-docs/*
-!docs/devops/
+docs/
+
 *.pdf
 UIDesign/
 
