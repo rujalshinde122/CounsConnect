@@ -7,7 +7,6 @@ import TodaySchedule from '@/components/dashboard/TodaySchedule'
 import SessionInfoCard from '@/components/dashboard/SessionInfoCard'
 import PendingTasksCard from '@/components/dashboard/PendingTasksCard'
 import RecentClientsCard from '@/components/dashboard/RecentClientsCard'
-import DashboardGreeting from '@/components/dashboard/DashboardGreeting'
 
 export const metadata: Metadata = { title: 'Overview | CounsConnect' }
 
@@ -17,6 +16,11 @@ function getDateRanges() {
   const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).toISOString()
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
   return { todayStart, todayEnd, weekAgo }
+}
+
+function getGreeting() {
+  const h = new Date().getHours()
+  return h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening'
 }
 
 export default async function DashboardPage() {
@@ -34,9 +38,7 @@ export default async function DashboardPage() {
     { data: recentClients },
     { data: profile },
   ] = await Promise.all([
-    supabase.from('appointments')
-      .select('*, patient:profiles!appointments_patient_id_fkey(name, email)')
-      .eq('counselor_id', user.id)
+    supabase.from('appointments').select('*').eq('counselor_id', user.id)
       .gte('start_time', todayStart).lte('start_time', todayEnd).order('start_time'),
     supabase.from('clients').select('*', { count: 'exact', head: true }).eq('counselor_id', user.id),
     supabase.from('clients').select('*', { count: 'exact', head: true })
@@ -54,7 +56,14 @@ export default async function DashboardPage() {
     <div className="max-w-[1400px] mx-auto space-y-6">
       
       {/* Welcome Header */}
-      <DashboardGreeting displayName={displayName} />
+      <div>
+        <h1 className="text-2xl font-bold text-[#2D3A3A] tracking-tight">
+          Good {getGreeting()}, {displayName}
+        </h1>
+        <p className="text-xs text-[#5A6B6B] mt-0.5">
+          Manage your counseling sessions, patient records, and practice schedule.
+        </p>
+      </div>
 
       {/* Practice Metric Stats (4 Cards) */}
       <PracticeStats
