@@ -14,12 +14,16 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
 }
 
 interface DashboardNavbarProps {
-  displayName: string
-  initials: string
+  displayName?: string
+  initials?: string
   role?: string
 }
 
-export default function DashboardNavbar() {
+export default function DashboardNavbar({
+  displayName,
+  initials,
+  role = 'counselor',
+}: DashboardNavbarProps = {}) {
   const pathname = usePathname()
 
   const current =
@@ -45,7 +49,7 @@ export default function DashboardNavbar() {
           )}
         </div>
 
-        {/* Right: Contextual Action */}
+        {/* Right: Contextual Action & User Badge */}
         <div className="flex items-center gap-3">
           {pathname.startsWith('/dashboard/appointments') ? (
             <Link
@@ -63,6 +67,15 @@ export default function DashboardNavbar() {
               <UserPlus className="w-3.5 h-3.5" />
               <span>New Client</span>
             </Link>
+          )}
+
+          {initials && (
+            <div
+              className="w-8 h-8 rounded-full bg-[#588B8B] text-white flex md:hidden items-center justify-center text-xs font-bold shrink-0"
+              title={`${displayName || 'User'} (${role})`}
+            >
+              {initials}
+            </div>
           )}
         </div>
 

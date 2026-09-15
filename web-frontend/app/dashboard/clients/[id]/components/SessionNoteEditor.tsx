@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Check, CalendarIcon, Loader2 } from 'lucide-react'
+import { Check, Loader2 } from 'lucide-react'
 
 interface Props {
   clientId: string
@@ -109,7 +109,7 @@ export default function SessionNoteEditor({ clientId, counselorId, onSaved }: Pr
             <div className="space-y-2">
               <label className="text-xs font-bold text-[#3D6363] uppercase tracking-wider flex items-center justify-between">
                 <span>Subjective (S)</span>
-                <span className="text-[10px] font-normal opacity-70 normal-case">Client's report</span>
+                <span className="text-[10px] font-normal opacity-70 normal-case">Client&apos;s report</span>
               </label>
               <Textarea 
                 value={subjective} onChange={e => setSubjective(e.target.value)}

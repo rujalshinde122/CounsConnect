@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { SessionNote } from '@/lib/types'
-import { Loader2, Calendar, Clock, Video, Users, ChevronDown, ChevronUp } from 'lucide-react'
+import { Loader2, Clock, Video, Users, ChevronDown, ChevronUp } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 interface Props {

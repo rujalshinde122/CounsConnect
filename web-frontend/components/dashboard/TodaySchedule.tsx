@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Calendar, Video, MapPin } from 'lucide-react'
+import { Video, MapPin } from 'lucide-react'
 import type { Appointment } from '@/lib/types'
 import AppointmentActions from '@/app/dashboard/appointments/AppointmentActions'
 

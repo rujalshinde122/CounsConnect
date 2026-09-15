@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Sparkles, ArrowUpRight, ShieldCheck } from 'lucide-react'
+import { Sparkles, ArrowUpRight } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()

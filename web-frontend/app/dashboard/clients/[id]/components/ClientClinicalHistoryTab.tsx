@@ -21,7 +21,7 @@ export default function ClientClinicalHistoryTab({ clientId }: Props) {
   useEffect(() => {
     async function loadHistory() {
       const supabase = createClient()
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('client_clinical_history')
         .select('*')
         .eq('client_id', clientId)
@@ -138,7 +138,11 @@ export default function ClientClinicalHistoryTab({ clientId }: Props) {
               <label className="text-xs font-bold text-[#2D3A3A] uppercase tracking-wider">Risk Level</label>
               <Select
                 value={history?.risk_level || 'Low'}
-                onValueChange={(val: any) => setHistory(prev => prev ? { ...prev, risk_level: val } : null)}
+                onValueChange={(val) => {
+                  if (val) {
+                    setHistory(prev => prev ? { ...prev, risk_level: val as ClientClinicalHistory['risk_level'] } : null)
+                  }
+                }}
               >
                 <SelectTrigger className="w-full text-sm bg-[#F6F5EE]/50 border-[#E2E0D6]">
                   <SelectValue placeholder="Select Risk Level" />

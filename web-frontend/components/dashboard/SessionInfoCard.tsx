@@ -1,6 +1,6 @@
 'use client'
 
-import { Clock, CalendarDays } from 'lucide-react'
+import { Clock } from 'lucide-react'
 
 export default function SessionInfoCard() {
   const offlineSlots = ['11:00 AM', '12:30 PM', '2:00 PM', '3:30 PM']

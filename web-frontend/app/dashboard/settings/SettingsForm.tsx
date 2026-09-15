@@ -127,14 +127,25 @@ export default function SettingsForm({
               placeholder="Full Name"
             />
           </div>
-          <div>
-            <label className="block text-xs font-semibold text-[#5A6B6B] mb-1">Email address</label>
-            <input
-              type="email"
-              className={`${inputCls} bg-[#F6F5EE]/60 text-[#889898] cursor-not-allowed`}
-              value={email}
-              disabled
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-[#5A6B6B] mb-1">Email address</label>
+              <input
+                type="email"
+                className={`${inputCls} bg-[#F6F5EE]/60 text-[#889898] cursor-not-allowed`}
+                value={email}
+                disabled
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-[#5A6B6B] mb-1">Account role</label>
+              <input
+                type="text"
+                className={`${inputCls} bg-[#F6F5EE]/60 text-[#889898] cursor-not-allowed capitalize`}
+                value={role}
+                disabled
+              />
+            </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
