@@ -68,7 +68,7 @@ export default function Sidebar({ displayName, initials, role }: SidebarProps) {
       {/* Navigation Links */}
       <div className="flex-1 px-3.5 py-4 space-y-1.5 overflow-y-auto">
         <div className="px-2.5 pb-1 text-[10px] font-bold text-[#889898] uppercase tracking-wider">
-          Practice Menu
+          {t('nav.practiceMenu')}
         </div>
         {navItems.map(({ href, labelKey, icon: Icon }) => {
           const active = isActive(href)

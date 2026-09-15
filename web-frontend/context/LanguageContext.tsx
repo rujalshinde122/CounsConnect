@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import en from '@/messages/en.json';
 import hi from '@/messages/hi.json';
 import mr from '@/messages/mr.json';
@@ -68,6 +68,13 @@ export function LanguageProvider({ children, initialLocale = 'en' }: LanguagePro
     return initialLocale;
   });
 
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = locale;
+      document.documentElement.setAttribute('data-locale', locale);
+    }
+  }, [locale]);
+
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
     try {
@@ -75,6 +82,7 @@ export function LanguageProvider({ children, initialLocale = 'en' }: LanguagePro
       document.cookie = `counsconnect_locale=${newLocale};path=/;max-age=31536000;SameSite=Lax`;
       if (typeof document !== 'undefined') {
         document.documentElement.lang = newLocale;
+        document.documentElement.setAttribute('data-locale', newLocale);
       }
     } catch {
       // Ignore persistence errors

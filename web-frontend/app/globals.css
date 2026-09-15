@@ -103,7 +103,9 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-sans), var(--font-inter), var(--font-devanagari), system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), var(--font-mukta), var(--font-devanagari), var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-devanagari: var(--font-mukta), var(--font-devanagari), system-ui, sans-serif;
+  --font-mukta: var(--font-mukta), sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -147,9 +149,45 @@
     @apply border-border outline-ring/50;
   }
   body {
+    font-family: var(--font-jakarta), var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     @apply bg-[#F6F5EE] text-[#2D3A3A] min-h-screen antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+}
+
+/* Devanagari (Marathi & Hindi) Typography Optimizations */
+:is([lang="mr"], [lang="hi"], [data-locale="mr"], [data-locale="hi"]),
+:is([lang="mr"], [lang="hi"], [data-locale="mr"], [data-locale="hi"]) body {
+  /* Prioritize Mukta (custom crafted for Marathi/Hindi legibility) and Noto Sans Devanagari */
+  font-family: var(--font-mukta), var(--font-devanagari), var(--font-jakarta), system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  /* Neutralize Latin OpenType character-variant flags that corrupt Devanagari complex script shaping */
+  font-feature-settings: normal !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Crucial: Devanagari scripts (Marathi/Hindi) MUST NOT use negative letter-spacing (tracking-tight/tighter).
+   Negative tracking causes matras (मात्रा, वेलांटी, उकार) to collide and breaks conjuncts (जोडाक्षरे). */
+:is([lang="mr"], [lang="hi"], [data-locale="mr"], [data-locale="hi"]) :is(
+  h1, h2, h3, h4, h5, h6,
+  p, span, a, button, input, label,
+  .tracking-tight, .tracking-tighter, [class*="tracking-tight"]
+) {
+  letter-spacing: 0.01em !important;
+}
+
+/* Give uppercase section headers in Devanagari readable, balanced tracking */
+:is([lang="mr"], [lang="hi"], [data-locale="mr"], [data-locale="hi"]) :is([class*="tracking-wider"], [class*="tracking-widest"]) {
+  letter-spacing: 0.02em !important;
+}
+
+/* Ensure adequate vertical clearance for upper matras (velanti, matra, rafar) and lower ukars */
+:is([lang="mr"], [lang="hi"], [data-locale="mr"], [data-locale="hi"]) :is(h1, h2, h3, h4, h5, h6, p, span, button) {
+  line-height: inherit;
+}
+
+/* Micro-labels in Devanagari need at least 11px to remain crisp and avoid ink-trap bleeding */
+:is([lang="mr"], [lang="hi"], [data-locale="mr"], [data-locale="hi"]) .text-\[10px\] {
+  font-size: 11px;
 }
 
 /* Custom Gradients & Aesthetic Helpers */

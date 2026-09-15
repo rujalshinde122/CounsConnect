@@ -40,6 +40,7 @@
     }
   },
   "nav": {
+    "practiceMenu": "प्रैक्टिस मेनू",
     "overview": "ओवरव्यू",
     "clients": "क्लाइंट्स",
     "appointments": "अपॉइंटमेंट्स",

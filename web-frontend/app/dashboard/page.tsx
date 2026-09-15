@@ -6,6 +6,7 @@ import PracticeStats from '@/components/dashboard/PracticeStats'
 import TodaySchedule from '@/components/dashboard/TodaySchedule'
 import PendingTasksCard from '@/components/dashboard/PendingTasksCard'
 import RecentClientsCard from '@/components/dashboard/RecentClientsCard'
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader'
 
 export const metadata: Metadata = { title: 'Overview | CounsConnect' }
 
@@ -15,11 +16,6 @@ function getDateRanges() {
   const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).toISOString()
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
   return { todayStart, todayEnd, weekAgo }
-}
-
-function getGreeting() {
-  const h = new Date().getHours()
-  return h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening'
 }
 
 export default async function DashboardPage() {
@@ -55,14 +51,7 @@ export default async function DashboardPage() {
     <div className="max-w-[1400px] mx-auto space-y-6">
       
       {/* Welcome Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[#2D3A3A] tracking-tight">
-          Good {getGreeting()}, {displayName}
-        </h1>
-        <p className="text-xs text-[#5A6B6B] mt-0.5">
-          Manage your counseling sessions, client records, and practice schedule.
-        </p>
-      </div>
+      <DashboardHeader displayName={displayName} />
 
       {/* Practice Metric Stats (4 Cards) */}
       <PracticeStats

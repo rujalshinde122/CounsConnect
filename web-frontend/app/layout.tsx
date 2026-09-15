@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans, Inter, Noto_Sans_Devanagari } from 'next/font/google'
+import { Plus_Jakarta_Sans, Inter, Noto_Sans_Devanagari, Mukta } from 'next/font/google'
 import { cookies } from 'next/headers'
 import { LanguageProvider, Locale } from '@/context/LanguageContext'
 import './globals.css'
@@ -7,13 +7,20 @@ import { cn } from "@/lib/utils"
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-jakarta',
   display: 'swap',
 })
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  display: 'swap',
+})
+
+const mukta = Mukta({
+  subsets: ['devanagari', 'latin'],
+  variable: '--font-mukta',
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 })
 
@@ -71,8 +78,19 @@ export default async function RootLayout({
   const locale: Locale = (rawLocale === 'hi' || rawLocale === 'mr' || rawLocale === 'en') ? rawLocale : 'en'
 
   return (
-    <html lang={locale} suppressHydrationWarning className={cn("font-sans", jakarta.variable, inter.variable, devanagari.variable)}>
-      <body className={`${jakarta.className} antialiased selection:bg-[#588B8B]/20 selection:text-[#2D3A3A]`}>
+    <html
+      lang={locale}
+      data-locale={locale}
+      suppressHydrationWarning
+      className={cn(
+        "font-sans",
+        jakarta.variable,
+        inter.variable,
+        mukta.variable,
+        devanagari.variable
+      )}
+    >
+      <body className="antialiased selection:bg-[#588B8B]/20 selection:text-[#2D3A3A]">
         <LanguageProvider initialLocale={locale}>
           {children}
         </LanguageProvider>
