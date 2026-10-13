@@ -1,0 +1,48 @@
+name: Supabase Keep-Alive & Health Check
+
+on:
+  # Runs every 3 days at 04:00 UTC (well within Supabase's 7-day inactivity pause threshold)
+  schedule:
+    - cron: '0 4 */3 * *'
+  # Allows manual execution anytime via GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  keep-alive:
+    name: Ping Supabase & Health Endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Web App Health Endpoint
+        id: ping_app
+        continue-on-error: true
+        run: |
+          echo "Pinging production web app health check route..."
+          RESPONSE=$(curl -s -w "\n%{http_code}" https://couns-connect.vercel.app/api/health || true)
+          HTTP_BODY=$(echo "$RESPONSE" | sed '$d')
+          HTTP_STATUS=$(echo "$RESPONSE" | tail -n1)
+          echo "HTTP Status: $HTTP_STATUS"
+          echo "Response: $HTTP_BODY"
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "Production health check successful!"
+          else
+            echo "Health route returned non-200 or was unreachable. Will ping Supabase directly."
+          fi
+
+      - name: Direct Ping to Supabase API (Fallback & Guaranteed Keep-Alive)
+        run: |
+          echo "Sending direct keep-alive ping to Supabase PostgREST..."
+          SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://heyuitlatlregkufqyta.supabase.co' }}"
+          ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhleXVpdGxhdGxyZWdrdWZxeXRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4MTQyMzYsImV4cCI6MjEwMzM5MDIzNn0.FA6ojWaWVSzZCo8t5dmdYlEmawPqKYDTSzrijXB2wkE' }}"
+          
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X GET "$SUPABASE_URL/rest/v1/profiles?select=count" \
+            -H "apikey: $ANON_KEY" \
+            -H "Authorization: Bearer $ANON_KEY")
+          
+          echo "Supabase Response HTTP Code: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "Supabase project successfully pinged! 7-day inactivity timer reset."
+          else
+            echo "Supabase request failed with status $HTTP_STATUS"
+            exit 1
+          fi
