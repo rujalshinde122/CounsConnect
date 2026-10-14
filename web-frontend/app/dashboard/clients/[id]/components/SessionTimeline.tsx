@@ -197,6 +197,21 @@ export default function SessionTimeline({ clientId }: Props) {
                             <p className="text-sm text-[#2D3A3A] bg-rose-50 p-3 rounded-lg border border-rose-100 whitespace-pre-wrap">{session.private_clinical_notes}</p>
                           </div>
                         )}
+                        {session.transcript && (
+                          <div className="space-y-1.5">
+                            <h5 className="text-[11px] font-bold uppercase tracking-wider text-[#588B8B] flex items-center gap-2">
+                              <span>Recorded Speech Transcript</span>
+                              {session.transcript_language && (
+                                <span className="text-[10px] normal-case font-medium bg-[#EDF4F2] px-1.5 py-0.5 rounded text-[#3D6363] border border-[#588B8B]/20">
+                                  {session.transcript_language}
+                                </span>
+                              )}
+                            </h5>
+                            <div className="text-xs text-[#2D3A3A] bg-white p-3 rounded-lg border border-[#E2E0D6] max-h-44 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+                              {session.transcript}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

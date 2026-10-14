@@ -134,6 +134,8 @@ export interface SessionNote {
   homework_assigned: string | null
   tags: string[] | null
   progress_rating: number | null
+  transcript?: string | null
+  transcript_language?: string | null
   created_at: string
   updated_at: string
 }

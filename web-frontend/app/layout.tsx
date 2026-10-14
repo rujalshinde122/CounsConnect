@@ -90,7 +90,10 @@ export default async function RootLayout({
         devanagari.variable
       )}
     >
-      <body className="antialiased selection:bg-[#588B8B]/20 selection:text-[#2D3A3A]">
+      <body 
+        suppressHydrationWarning 
+        className="antialiased selection:bg-[#588B8B]/20 selection:text-[#2D3A3A]"
+      >
         <LanguageProvider initialLocale={locale}>
           {children}
         </LanguageProvider>

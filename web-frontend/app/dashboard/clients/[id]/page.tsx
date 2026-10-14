@@ -205,7 +205,12 @@ export default async function ClientDetailPage({ params }: PageProps) {
         </TabsContent>
 
         <TabsContent value="new_note" className="mt-0">
-          <SessionNoteEditor clientId={client.id} counselorId={client.counselor_id} />
+          <SessionNoteEditor 
+            clientId={client.id} 
+            counselorId={client.counselor_id} 
+            clientName={client.name}
+            clientIssues={client.issues}
+          />
         </TabsContent>
 
         <TabsContent value="tasks" className="mt-0">
