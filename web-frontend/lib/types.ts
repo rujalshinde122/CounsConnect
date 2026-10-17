@@ -21,6 +21,7 @@ export interface Profile {
 export interface Client {
   id: string
   counselor_id: string
+  user_id?: string | null
   name: string
   age: number
   gender: 'Male' | 'Female' | 'Transgender' | 'Other'
@@ -39,6 +40,20 @@ export interface Client {
   created_at: string
 }
 
+export interface PatientProfile {
+  id: string
+  user_id: string
+  assigned_counselor_id: string | null
+  therapy_plan: string | null
+  emergency_contact_name: string | null
+  emergency_contact_phone: string | null
+  is_intake_completed: boolean
+  client_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+
 export type AppointmentStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
 export type AppointmentLocation = 'video' | 'in-person'
 
@@ -51,6 +66,11 @@ export interface Appointment {
   status: AppointmentStatus
   location: AppointmentLocation
   notes: string | null
+  rescheduled_by_counselor?: boolean
+  declined_by?: 'counselor' | 'patient' | null
+  cancel_reason?: string | null
+  counselor_notified?: boolean
+  patient_notified?: boolean
   created_at: string
   updated_at: string
   // Joined
@@ -71,6 +91,8 @@ export interface Task {
   deadline: string | null
   status: TaskStatus
   feedback: string | null
+  patient_notes?: string | null
+  completed_at?: string | null
   session_id: string | null
   created_at: string
   updated_at: string

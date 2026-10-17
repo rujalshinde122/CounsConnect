@@ -1,22 +1,24 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Sparkles, ArrowUpRight, CheckCircle2 } from 'lucide-react'
+import { Sparkles, ArrowUpRight, CheckCircle2, User, Stethoscope } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export default function RegisterPage() {
+  const router = useRouter()
   const { t } = useLanguage()
+  const [role, setRole] = useState<'patient' | 'counselor'>('patient')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const role = 'counselor'
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -28,14 +30,34 @@ export default function RegisterPage() {
     if (password !== confirmPassword) { setError('Passwords do not match'); return }
     if (password.length < 6) { setError('Password must be at least 6 characters'); return }
     setLoading(true)
+
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { name, role } },
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name.trim(),
+          role,
+        },
+      },
     })
     setLoading(false)
-    if (error) setError(error.message)
-    else setSuccess(true)
+
+    if (error) {
+      setError(error.message)
+    } else {
+      if (data.session) {
+        if (role === 'patient') {
+          router.push('/patient/onboarding')
+        } else {
+          router.push('/dashboard')
+        }
+        router.refresh()
+      } else {
+        setSuccess(true)
+      }
+    }
   }
 
   if (success) {
@@ -50,7 +72,7 @@ export default function RegisterPage() {
           </div>
           <h2 className="text-xl font-bold text-[#2D3A3A]">Check your email</h2>
           <p className="text-xs text-[#5A6B6B] leading-relaxed">
-            We sent an activation link to <strong className="text-[#2D3A3A]">{email}</strong>. Click the link to complete your counselor registration.
+            We sent an activation link to <strong className="text-[#2D3A3A]">{email}</strong>. Click the link to complete your {role === 'patient' ? 'patient' : 'counselor'} registration.
           </p>
           <div className="pt-2">
             <Link
@@ -72,7 +94,7 @@ export default function RegisterPage() {
         <LanguageSwitcher variant="auth" />
       </div>
 
-      {/* Left */}
+      {/* Left Branding Panel */}
       <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-[#3D6363] via-[#2D4E4E] to-[#263F3F] p-12 lg:p-16 text-white relative overflow-hidden">
         <div className="flex items-center gap-3 relative z-10">
           <div className="w-10 h-10 bg-white text-[#263F3F] rounded-2xl flex items-center justify-center font-extrabold text-base shadow-sm">
@@ -80,7 +102,9 @@ export default function RegisterPage() {
           </div>
           <div>
             <span className="font-bold text-base tracking-tight text-white block">{t('common.appName')}</span>
-            <p className="text-[11px] text-[#DDEAE7] font-medium tracking-wide mt-0.5">{t('common.practiceWorkspace')}</p>
+            <p className="text-[11px] text-[#DDEAE7] font-medium tracking-wide mt-0.5">
+              {role === 'patient' ? 'Client Wellness Portal' : t('common.practiceWorkspace')}
+            </p>
           </div>
         </div>
 
@@ -90,10 +114,12 @@ export default function RegisterPage() {
             <span>{t('auth.login.featureSecure')}</span>
           </div>
           <h2 className="text-3xl xl:text-4xl font-extrabold leading-tight tracking-tight text-white">
-            {t('auth.register.title')}
+            {role === 'patient' ? 'Your Journey to Wellness Starts Here' : t('auth.register.title')}
           </h2>
           <p className="text-sm text-[#DDEAE7] leading-relaxed">
-            {t('auth.register.subtitle')}
+            {role === 'patient'
+              ? 'Connect directly with certified mental health professionals. Fill your intake, track your exercises, and access confidential therapy support.'
+              : t('auth.register.subtitle')}
           </p>
         </div>
 
@@ -105,16 +131,59 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      {/* Right */}
+      {/* Right Form Container */}
       <div className="flex items-center justify-center p-6 sm:p-12 lg:p-16 overflow-y-auto">
         <div className="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 border border-[#E2E0D6] shadow-xs space-y-6">
+          
+          {/* Header */}
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#588B8B]" />
-              <span className="text-xs font-bold uppercase tracking-wider text-[#588B8B]">{t('auth.register.submitButton')}</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#588B8B]">
+                {role === 'patient' ? 'REGISTER PATIENT' : 'REGISTER PRACTICE'}
+              </span>
             </div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#2D3A3A]">{t('auth.register.title')}</h1>
-            <p className="text-xs text-[#5A6B6B]">{t('auth.register.subtitle')}</p>
+            <h1 className="text-2xl font-extrabold tracking-tight text-[#2D3A3A]">
+              {role === 'patient' ? 'Create Patient Account' : 'Create Practice Account'}
+            </h1>
+            <p className="text-xs text-[#5A6B6B]">
+              {role === 'patient'
+                ? 'Register to book sessions and collaborate with your counselor'
+                : 'Get started with CounsConnect clinical management'}
+            </p>
+          </div>
+
+          {/* Role Selector Toggle */}
+          <div className="space-y-1.5">
+            <Label className="text-[11px] font-bold text-[#5A6B6B] uppercase tracking-wide">
+              I am registering as:
+            </Label>
+            <div className="grid grid-cols-2 gap-2 p-1 bg-[#F6F5EE] rounded-2xl border border-[#E2E0D6]">
+              <button
+                type="button"
+                onClick={() => setRole('patient')}
+                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                  role === 'patient'
+                    ? 'bg-white text-[#2D3A3A] shadow-xs border border-[#E2E0D6]'
+                    : 'text-[#5A6B6B] hover:text-[#2D3A3A]'
+                }`}
+              >
+                <User className="w-3.5 h-3.5 text-[#588B8B]" />
+                Patient
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('counselor')}
+                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                  role === 'counselor'
+                    ? 'bg-white text-[#2D3A3A] shadow-xs border border-[#E2E0D6]'
+                    : 'text-[#5A6B6B] hover:text-[#2D3A3A]'
+                }`}
+              >
+                <Stethoscope className="w-3.5 h-3.5 text-[#588B8B]" />
+                Counsellor
+              </button>
+            </div>
           </div>
 
           {error && (
@@ -128,28 +197,73 @@ export default function RegisterPage() {
               <Label htmlFor="name" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
                 {t('auth.register.fullNameLabel')}
               </Label>
-              <Input id="name" type="text" autoComplete="name" required value={name} onChange={e => setName(e.target.value)} placeholder="Dr. Full Name" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
+              <Input
+                id="name"
+                type="text"
+                autoComplete="name"
+                required
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder={role === 'patient' ? 'Your Full Name' : 'Dr. Full Name'}
+                className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5"
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="reg-email" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
                 {t('auth.register.emailLabel')}
               </Label>
-              <Input id="reg-email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="counselor@practice.com" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
+              <Input
+                id="reg-email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder={role === 'patient' ? 'patient@example.com' : 'counselor@practice.com'}
+                className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5"
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="reg-password" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
                 {t('auth.register.passwordLabel')}
               </Label>
-              <Input id="reg-password" type="password" autoComplete="new-password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="Min. 6 characters" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
+              <Input
+                id="reg-password"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Min. 6 characters"
+                className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5"
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="confirm-password" className="text-xs font-bold text-[#5A6B6B] uppercase tracking-wide">
                 {t('auth.register.confirmPasswordLabel')}
               </Label>
-              <Input id="confirm-password" type="password" autoComplete="new-password" required value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Repeat password" className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5" />
+              <Input
+                id="confirm-password"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                placeholder="Repeat password"
+                className="rounded-2xl border-[#E2E0D6] bg-[#F6F5EE]/60 focus:bg-white text-xs sm:text-sm px-4 py-2.5"
+              />
             </div>
-            <Button id="register-btn" type="submit" className="w-full bg-[#588B8B] hover:bg-[#3D6363] text-white font-bold text-xs py-2.5 rounded-full shadow-xs transition-colors mt-2" disabled={loading}>
-              {loading ? t('auth.register.registering') : t('auth.register.submitButton')}
+            <Button
+              id="register-btn"
+              type="submit"
+              className="w-full bg-[#588B8B] hover:bg-[#3D6363] text-white font-bold text-xs py-2.5 rounded-full shadow-xs transition-colors mt-2"
+              disabled={loading}
+            >
+              {loading
+                ? t('auth.register.registering')
+                : role === 'patient'
+                ? 'Create Patient Account'
+                : t('auth.register.submitButton')}
             </Button>
           </form>
 

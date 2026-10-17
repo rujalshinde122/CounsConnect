@@ -1,7 +1,18 @@
+import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
-// Root page — middleware handles redirects to /dashboard or /login
-// This only renders if middleware somehow doesn't catch it
-export default function RootPage() {
+export default async function RootPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/login')
+  }
+
+  const role = user.user_metadata?.role
+  if (role === 'patient') {
+    redirect('/patient')
+  }
+
   redirect('/dashboard')
 }

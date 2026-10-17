@@ -41,17 +41,31 @@ export async function proxy(request: NextRequest) {
 
 
   const { pathname } = request.nextUrl
+  const role = user?.user_metadata?.role ?? 'counselor'
 
-  // If user is NOT logged in and tries to access any /dashboard route → redirect to login
-  if (!user && pathname.startsWith('/dashboard')) {
+  // If user is NOT logged in and tries to access /dashboard or /patient routes → redirect to login
+  if (!user && (pathname.startsWith('/dashboard') || pathname.startsWith('/patient'))) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // If user IS logged in and tries to access /login or /register → redirect to dashboard
-  // (forgot-password is always accessible even when logged in)
+  // If user IS logged in and tries to access /login, /register, or / → redirect to appropriate portal
   if (user && (pathname === '/login' || pathname === '/register' || pathname === '/')) {
+    const url = request.nextUrl.clone()
+    url.pathname = role === 'patient' ? '/patient' : '/dashboard'
+    return NextResponse.redirect(url)
+  }
+
+  // Role isolation: Patients cannot access counselor /dashboard
+  if (user && role === 'patient' && pathname.startsWith('/dashboard')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/patient'
+    return NextResponse.redirect(url)
+  }
+
+  // Role isolation: Counselors cannot access /patient portal
+  if (user && role !== 'patient' && pathname.startsWith('/patient')) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
