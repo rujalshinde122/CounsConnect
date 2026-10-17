@@ -25,12 +25,28 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/dashboard')
+      const user = data.user
+      const role = user?.user_metadata?.role
+      if (role === 'patient') {
+        const { data: client } = await supabase
+          .from('clients')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle()
+
+        if (client) {
+          router.push('/patient')
+        } else {
+          router.push('/patient/onboarding')
+        }
+      } else {
+        router.push('/dashboard')
+      }
       router.refresh()
     }
   }

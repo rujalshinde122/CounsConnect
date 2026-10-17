@@ -23,9 +23,21 @@ export default async function DashboardLayout({
   const displayName = profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || 'Counselor'
   const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
 
+  // Fetch pending appointments count for counselor
+  const { count: pendingApptsCount } = await supabase
+    .from('appointments')
+    .select('*', { count: 'exact', head: true })
+    .eq('counselor_id', user.id)
+    .eq('status', 'pending')
+
   return (
     <div className="flex h-screen bg-[#F6F5EE] overflow-hidden">
-      <Sidebar displayName={displayName} initials={initials} role={profile?.role ?? 'counselor'} />
+      <Sidebar
+        displayName={displayName}
+        initials={initials}
+        role={profile?.role ?? 'counselor'}
+        appointmentsBadgeCount={pendingApptsCount || 0}
+      />
       <main className="flex-1 overflow-y-auto p-6 sm:p-8 bg-[#F6F5EE]">
         {children}
       </main>

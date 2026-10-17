@@ -228,7 +228,12 @@ export default function AppointmentsView({ appointments }: AppointmentsViewProps
                         </span>
 
                         {['pending', 'confirmed'].includes(appt.status) && (
-                          <AppointmentActions appointmentId={appt.id} />
+                          <AppointmentActions
+                            appointmentId={appt.id}
+                            currentStatus={appt.status}
+                            startTime={appt.start_time}
+                            currentNotes={appt.notes}
+                          />
                         )}
                       </div>
                     </div>

@@ -18,7 +18,7 @@ import {
 const navItems = [
   { href: '/dashboard', labelKey: 'nav.overview', icon: LayoutDashboard },
   { href: '/dashboard/clients', labelKey: 'nav.clients', icon: Users },
-  { href: '/dashboard/appointments', labelKey: 'nav.appointments', icon: CalendarDays },
+  { href: '/dashboard/appointments', labelKey: 'nav.appointments', icon: CalendarDays, badgeKey: 'appointments' },
   { href: '/dashboard/tasks', labelKey: 'nav.tasks', icon: CheckSquare },
 ]
 
@@ -26,9 +26,15 @@ interface SidebarProps {
   displayName: string
   initials: string
   role: string
+  appointmentsBadgeCount?: number
 }
 
-export default function Sidebar({ displayName, initials, role }: SidebarProps) {
+export default function Sidebar({
+  displayName,
+  initials,
+  role,
+  appointmentsBadgeCount = 0,
+}: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const { t } = useLanguage()
@@ -70,29 +76,39 @@ export default function Sidebar({ displayName, initials, role }: SidebarProps) {
         <div className="px-2.5 pb-1 text-[10px] font-bold text-[#889898] uppercase tracking-wider">
           {t('nav.practiceMenu')}
         </div>
-        {navItems.map(({ href, labelKey, icon: Icon }) => {
+        {navItems.map(({ href, labelKey, icon: Icon, badgeKey }) => {
           const active = isActive(href)
+          const showBadge = badgeKey === 'appointments' && appointmentsBadgeCount > 0
+
           return (
             <Link
               key={href}
               href={href}
               className={cn(
-                'group relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-150',
+                'group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-150',
                 active
                   ? 'bg-white text-[#2D3A3A] font-bold border border-[#E2E0D6] shadow-2xs'
                   : 'text-[#5A6B6B] hover:text-[#2D3A3A] hover:bg-white/60'
               )}
             >
-              {active && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#588B8B] rounded-r-full" />
-              )}
-              <Icon
-                className={cn(
-                  'w-4 h-4 transition-transform duration-150 group-hover:scale-110',
-                  active ? 'text-[#588B8B]' : 'text-[#889898]'
+              <div className="flex items-center gap-3 min-w-0">
+                {active && (
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#588B8B] rounded-r-full" />
                 )}
-              />
-              <span className="truncate">{t(labelKey)}</span>
+                <Icon
+                  className={cn(
+                    'w-4 h-4 transition-transform duration-150 group-hover:scale-110 shrink-0',
+                    active ? 'text-[#588B8B]' : 'text-[#889898]'
+                  )}
+                />
+                <span className="truncate">{t(labelKey)}</span>
+              </div>
+
+              {showBadge && (
+                <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-extrabold text-white bg-[#588B8B] rounded-full shadow-2xs">
+                  {appointmentsBadgeCount}
+                </span>
+              )}
             </Link>
           )
         })}
